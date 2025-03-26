@@ -79,7 +79,7 @@ class SustainTrail extends FlxSprite
    * Can be used for some custom note kinds/types (Full opacity is not looking good for everything, you know).
    * Example: 0.6 - Old (Legacy) Style.
    */
-  public var opacityMult:Float = 1;
+  public var opacityMult(default, set):Float = 1;
 
   /**
    * What part of the trail's end actually represents the end of the note.
@@ -259,6 +259,13 @@ class SustainTrail extends FlxSprite
     this.sustainLength = s;
     triggerRedraw();
     return this.sustainLength;
+  }
+
+  function set_opacityMult(op:Float):Float
+  {
+    if (opacityMult != op) alpha = op;
+
+    return opacityMult = op;
   }
 
   function triggerRedraw()
