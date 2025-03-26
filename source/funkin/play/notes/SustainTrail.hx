@@ -75,6 +75,13 @@ class SustainTrail extends FlxSprite
   private var zoom:Float = 1;
 
   /**
+   * Internal value for sligtly tweaking trail opacity.
+   * Can be used for some custom note kinds/types (Full opacity is not looking good for everything, you know).
+   * Example: 0.6 - Old (Legacy) Style.
+   */
+  public var opacityMult:Float = 1;
+
+  /**
    * What part of the trail's end actually represents the end of the note.
    * This can be used to have a little bit sticking out.
    */
@@ -210,7 +217,7 @@ class SustainTrail extends FlxSprite
     flipY = Preferences.downscroll;
 
     // alpha = 0.6;
-    alpha = 1.0;
+    alpha = 1.0 * opacityMult;
     // calls updateColorTransform(), which initializes processedGraphic!
     updateColorTransform();
 
