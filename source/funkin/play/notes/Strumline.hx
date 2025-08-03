@@ -235,7 +235,6 @@ class Strumline extends FlxSpriteGroup
     if (inArrowContorlSchemeMode && isPlayer) this.background.x -= 100;
     #end
     this.add(this.background);
-    strumlineScale = new FlxCallbackPoint(strumlineScaleCallback);
 
     strumlineScale = new FlxCallbackPoint(strumlineScaleCallback);
 
