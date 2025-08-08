@@ -1,10 +1,14 @@
 package funkin.ui.freeplay.dj;
 
+import flixel.graphics.frames.FlxFrame;
+import flixel.FlxCamera;
+import flixel.FlxBasic;
 import flixel.util.FlxSignal;
 import funkin.graphics.adobeanimate.FlxAtlasSprite;
 import funkin.audio.FunkinSound;
 import funkin.data.freeplay.player.PlayerRegistry;
 import funkin.data.freeplay.player.PlayerData.PlayerFreeplayDJData;
+import funkin.util.assets.FlxAnimationUtil;
 
 enum FreeplayDJState
 {
@@ -83,223 +87,18 @@ class BaseFreeplayDJ extends FlxAtlasSprite
   var timeIdling:Float = 0;
   var lowPumpLoopPoint:Int = 4;
 
-  var offsetX:Float = 0.0;
-  var offsetY:Float = 0.0;
-
   public function new(x:Float, y:Float, characterId:String)
   {
     this.characterId = characterId;
 
-    var playableChar = PlayerRegistry.instance.fetchEntry(characterId);
+    final playableChar = PlayerRegistry.instance.fetchEntry(characterId);
     playableCharData = playableChar?.getFreeplayDJData();
 
     super(x, y, null, null, false);
-
-    // this.animation.onFinish.add(onFinishAnim);
-    // this.animation.onFrame.add(_onAnimationFrame);
   }
 
-  /*
-    public override function update(elapsed:Float):Void
-    {
-      switch (currentState)
-      {
-        case Intro:
-          // Play the intro animation then leave this state immediately.
-          var animPrefix = playableCharData?.getAnimationPrefix('intro');
-          if (animPrefix != null && (getCurrentAnimation() != animPrefix || !this.anim.isPlaying))
-          {
-            trace(animPrefix);
-            trace(getCurrentAnimation());
-            playFlashAnimation(animPrefix, true);
-          }
-          timeIdling = 0;
-        case Idle:
-          // We are in this state the majority of the time.
-          var animPrefix = playableCharData?.getAnimationPrefix('idle');
-          if (animPrefix != null && getCurrentAnimation() != animPrefix)
-          {
-            playFlashAnimation(animPrefix, true, false, true);
-          }
-          timeIdling += elapsed;
-        case NewUnlock:
-          var animPrefix = playableCharData?.getAnimationPrefix('newUnlock');
-          if (animPrefix != null && !hasAnimation(animPrefix))
-          {
-            currentState = Idle;
-          }
-          if (animPrefix != null && getCurrentAnimation() != animPrefix)
-          {
-            playFlashAnimation(animPrefix, true, false, true);
-          }
-        case Confirm:
-          var animPrefix = playableCharData?.getAnimationPrefix('confirm');
-          if (animPrefix != null && getCurrentAnimation() != animPrefix) playFlashAnimation(animPrefix, false);
-          timeIdling = 0;
-        case FistPumpIntro:
-          var animPrefixA = playableCharData?.getAnimationPrefix('fistPump');
-          var animPrefixB = playableCharData?.getAnimationPrefix('loss');
-
-          if (getCurrentAnimation() == animPrefixA)
-          {
-            var endFrame = playableCharData?.getFistPumpIntroEndFrame() ?? 0;
-            if (endFrame > -1 && anim.curFrame >= endFrame)
-            {
-              playFlashAnimation(animPrefixA, true, false, false, playableCharData?.getFistPumpIntroStartFrame());
-            }
-          }
-          else if (getCurrentAnimation() == animPrefixB)
-          {
-            var endFrame = playableCharData?.getFistPumpIntroBadEndFrame() ?? 0;
-            if (endFrame > -1 && anim.curFrame >= endFrame)
-            {
-              playFlashAnimation(animPrefixB, true, false, false, playableCharData?.getFistPumpIntroBadStartFrame());
-            }
-          }
-          else
-          {
-            FlxG.log.warn("Unrecognized animation in FistPumpIntro: " + getCurrentAnimation());
-          }
-
-        case FistPump:
-          var animPrefixA = playableCharData?.getAnimationPrefix('fistPump');
-          var animPrefixB = playableCharData?.getAnimationPrefix('loss');
-
-          if (getCurrentAnimation() == animPrefixA)
-          {
-            var endFrame = playableCharData?.getFistPumpLoopEndFrame() ?? 0;
-            if (endFrame > -1 && anim.curFrame >= endFrame)
-            {
-              playFlashAnimation(animPrefixA, true, false, false, playableCharData?.getFistPumpLoopStartFrame());
-            }
-          }
-          else if (getCurrentAnimation() == animPrefixB)
-          {
-            var endFrame = playableCharData?.getFistPumpLoopBadEndFrame() ?? 0;
-            if (endFrame > -1 && anim.curFrame >= endFrame)
-            {
-              playFlashAnimation(animPrefixB, true, false, false, playableCharData?.getFistPumpLoopBadStartFrame());
-            }
-          }
-          else
-          {
-            FlxG.log.warn("Unrecognized animation in FistPump: " + getCurrentAnimation());
-          }
-
-        case IdleEasterEgg:
-          var animPrefix = playableCharData?.getAnimationPrefix('idleEasterEgg');
-          if (animPrefix != null && getCurrentAnimation() != animPrefix)
-          {
-            onIdleEasterEgg.dispatch();
-            playFlashAnimation(animPrefix, false);
-            seenIdleEasterEgg = true;
-          }
-          timeIdling = 0;
-        case Cartoon:
-          var animPrefix = playableCharData?.getAnimationPrefix('cartoon');
-          if (animPrefix == null)
-          {
-            currentState = IdleEasterEgg;
-          }
-          else
-          {
-            if (getCurrentAnimation() != animPrefix) playFlashAnimation(animPrefix, true);
-            timeIdling = 0;
-          }
-        default:
-          // I shit myself.
-      }
-
-      // Call the superclass function AFTER updating the current state and playing the next animation.
-      // This ensures that FlxAnimate starts rendering the new animation immediately.
-      super.update(elapsed);
-  }*/
   function onFinishAnim(name:String):Void {}
 
-  /*function onFinishAnim(name:String):Void
-    {
-      // var name = anim.curSymbol.name;
-
-      if (name == playableCharData?.getAnimationPrefix('intro'))
-      {
-        if (PlayerRegistry.instance.hasNewCharacter())
-        {
-          currentState = NewUnlock;
-        }
-        else
-        {
-          currentState = Idle;
-        }
-        onIntroDone.dispatch();
-      }
-      else if (name == playableCharData?.getAnimationPrefix('idle'))
-      {
-        // trace('Finished idle');
-
-        if (timeIdling >= IDLE_EGG_PERIOD && !seenIdleEasterEgg)
-        {
-          currentState = IdleEasterEgg;
-        }
-        else if (timeIdling >= IDLE_CARTOON_PERIOD)
-        {
-          currentState = Cartoon;
-        }
-      }
-      else if (name == playableCharData?.getAnimationPrefix('confirm'))
-      {
-        // trace('Finished confirm');
-      }
-      else if (name == playableCharData?.getAnimationPrefix('fistPump'))
-      {
-        // trace('Finished fist pump');
-        currentState = Idle;
-      }
-      else if (name == playableCharData?.getAnimationPrefix('idleEasterEgg'))
-      {
-        // trace('Finished spook');
-        currentState = Idle;
-      }
-      else if (name == playableCharData?.getAnimationPrefix('loss'))
-      {
-        // trace('Finished loss reaction');
-        currentState = Idle;
-      }
-      else if (name == playableCharData?.getAnimationPrefix('cartoon'))
-      {
-        // trace('Finished cartoon');
-
-        var frame:Int = FlxG.random.bool(33) ? (playableCharData?.getCartoonLoopBlinkFrame() ?? 0) : (playableCharData?.getCartoonLoopFrame() ?? 0);
-
-        // Character switches channels when the video ends, or at a 10% chance each time his idle loops.
-        if (FlxG.random.bool(5))
-        {
-          frame = playableCharData?.getCartoonChannelChangeFrame() ?? 0;
-          // boyfriend switches channel code?
-          // Transefer into bf.hxc in scripts/freeplay/dj
-          // runTvLogic();
-        }
-        trace('Replay idle: ${frame}');
-        var animPrefix = playableCharData?.getAnimationPrefix('cartoon');
-        if (animPrefix != null) playFlashAnimation(animPrefix, true, false, false, frame);
-        // trace('Finished confirm');
-      }
-      else if (name == playableCharData?.getAnimationPrefix('newUnlock'))
-      {
-        // Animation should loop.
-      }
-      else if (name == playableCharData?.getAnimationPrefix('charSelect'))
-      {
-        onCharSelectComplete();
-      }
-      else
-      {
-        trace('Finished ${name}');
-      }
-  }*/
-  /**
-   * Dynamic function, it's actually a variable you can reassign!
-   * `dj.onCharSelectComplete = function() {};`
-   */
   public function onCharSelectComplete():Void
   {
     trace('onCharSelectComplete()');
@@ -427,30 +226,364 @@ class BaseFreeplayDJ extends FlxAtlasSprite
   function applyAnimOffset()
   {
     var animName = getCurrentAnimation();
+    trace(animName);
     var daOffset = playableCharData?.getAnimationOffsetsByPrefix(animName);
+    trace(daOffset);
     if (daOffset != null)
     {
-      var xValue = daOffset[0];
-      var yValue = daOffset[1];
+      final xValue = daOffset[0];
+      final yValue = daOffset[1];
       offset.set(xValue, yValue);
     }
     else
       offset.set(0, 0);
+  }
+}
 
-    /*var animName = getCurrentAnimation();
-      var daOffset = playableCharData?.getAnimationOffsetsByPrefix(animName);
-      if (daOffset != null)
-      {
-        var xValue = daOffset[0];
-        var yValue = daOffset[1];
-        if (animName == "Boyfriend DJ watchin tv OG")
+// Class for all non-atalas DJ's
+class FlixelFramedFreeplayDJ extends BaseFreeplayDJ
+{
+  public function new(x:Float, y:Float, characterId:String)
+  {
+    super(x, y, characterId);
+
+    loadFrames();
+    loadAnimations();
+
+    animation.onFinish.add(onFinishAnim);
+    animation.onLoop.add(onFinishAnim);
+
+    // animation.onFrameChange.add((name, num, index) -> trace('name:$name, num:$num, index:$index'));
+  }
+
+  public function loadFrames():Void
+  {
+    trace("OVERRIDE ME");
+    trace("LOADING FRAMES FUNC");
+  }
+
+  public function loadAnimations():Void
+  {
+    trace('[SPARROWCHAR] Loading ${playableCharData.getAnimationsList().length} animations for ${characterId}');
+
+    FlxAnimationUtil.addAtlasAnimations(this, playableCharData.getAnimationsList());
+
+    var animNames = this.animation.getNameList();
+    trace('[SPARROWCHAR] Successfully loaded ${animNames.length} animations for ${characterId}');
+  }
+
+  override function applyAnimOffset()
+  {
+    var animName = getCurrentAnimation();
+    trace(animName);
+    var daOffset = playableCharData?.getAnimationOffsets(animName);
+    trace(daOffset);
+    if (daOffset != null)
+    {
+      final xValue = daOffset[0];
+      final yValue = daOffset[1];
+      offset.set(xValue, yValue);
+    }
+    else
+      offset.set(0, 0);
+  }
+
+  override public function playFlashAnimation(id:String, Force:Bool = false, Reverse:Bool = false, Loop:Bool = false, Frame:Int = 0):Void
+  {
+    // No LOOP logic, because default Flixel's FlxAnimationController can normaly work with LOOPED animations
+    animation.play(id, Force, Reverse, Frame);
+    applyAnimOffset();
+  }
+
+  override public function listAnimations():Array<String>
+  {
+    return animation.getNameList() ?? [];
+  }
+
+  override public function getCurrentAnimation():String
+  {
+    return animation?.curAnim?.name ?? "";
+  }
+
+  override function updateAnimation(elapsed:Float):Void
+  {
+    animation.update(elapsed);
+  }
+
+  override public function hasAnimation(anim:String):Bool
+  {
+    return listAnimations().contains(anim);
+  }
+
+  override public function toCharSelect():Void
+  {
+    var animPrefix = 'charSelect';
+    if (animPrefix != null && hasAnimation(animPrefix))
+    {
+      currentState = CharSelect;
+      playFlashAnimation(animPrefix, true, false, false, 0);
+    }
+    else
+    {
+      FlxG.log.warn("Freeplay character does not have 'charSelect' animation!");
+      currentState = Confirm;
+      // Call this immediately; otherwise, we get locked out of Character Select.
+      onCharSelectComplete();
+    }
+  }
+
+  override public function fistPumpIntro():Void
+  {
+    // We really don't want to play anything but the new character animation here.
+    if (PlayerRegistry.instance.hasNewCharacter())
+    {
+      currentState = NewUnlock;
+      return;
+    }
+
+    currentState = FistPumpIntro;
+    playFlashAnimation('fistPumpIntro', true, false, false);
+  }
+
+  override public function fistPump():Void
+  {
+    // We really don't want to play anything but the new character animation here.
+    if (PlayerRegistry.instance.hasNewCharacter())
+    {
+      currentState = NewUnlock;
+      return;
+    }
+
+    currentState = FistPump;
+    playFlashAnimation('fistPump', true, false, false);
+  }
+
+  override public function fistPumpLossIntro():Void
+  {
+    // We really don't want to play anything but the new character animation here.
+    if (PlayerRegistry.instance.hasNewCharacter())
+    {
+      currentState = NewUnlock;
+      return;
+    }
+
+    currentState = FistPumpIntro;
+    playFlashAnimation('lossIntro', true, false, false);
+  }
+
+  override public function fistPumpLoss():Void
+  {
+    // We really don't want to play anything but the new character animation here.
+    if (PlayerRegistry.instance.hasNewCharacter())
+    {
+      currentState = NewUnlock;
+      return;
+    }
+
+    currentState = FistPump;
+    playFlashAnimation('loss', true, false, false);
+  }
+
+  public override function update(elapsed:Float):Void
+  {
+    switch (currentState)
+    {
+      case Intro:
+        // Play the intro animation then leave this state immediately.
+        var animPrefix = 'intro';
+        if (animPrefix != null && (getCurrentAnimation() != animPrefix || this.animation.finished)) playFlashAnimation(animPrefix, true);
+        timeIdling = 0;
+      case Idle:
+        // We are in this state the majority of the time.
+        var animPrefix = 'idle';
+        if (animPrefix != null && getCurrentAnimation() != animPrefix) playFlashAnimation(animPrefix, true, false, true);
+
+        timeIdling += elapsed;
+      case NewUnlock:
+        var animPrefix = 'newUnlock';
+        if (animPrefix != null && !hasAnimation(animPrefix))
         {
-          xValue += offsetX;
-          yValue += offsetY;
+          currentState = Idle;
         }
-        offset.set(xValue, yValue);
+        if (animPrefix != null && getCurrentAnimation() != animPrefix)
+        {
+          playFlashAnimation(animPrefix, true, false, true);
+        }
+      case Confirm:
+        var animPrefix = 'confirm';
+        if (animPrefix != null && getCurrentAnimation() != animPrefix) playFlashAnimation(animPrefix, false);
+        timeIdling = 0;
+      case FistPumpIntro:
+        // I shit my self - PurSnake
+      case FistPump:
+        // Twice
+      case IdleEasterEgg:
+        var animPrefix = 'idleEasterEgg';
+        if (animPrefix != null && getCurrentAnimation() != animPrefix)
+        {
+          onIdleEasterEgg.dispatch();
+          playFlashAnimation(animPrefix, false);
+          seenIdleEasterEgg = true;
+        }
+        timeIdling = 0;
+      case Cartoon:
+        var animPrefix = 'cartoon';
+        if (animPrefix == null)
+        {
+          currentState = IdleEasterEgg;
+        }
+        else
+        {
+          if (getCurrentAnimation() != animPrefix) playFlashAnimation(animPrefix, true);
+          timeIdling = 0;
+        }
+      default:
+        // I shit myself.
+    }
+
+    super.update(elapsed);
+  }
+
+  override function onFinishAnim(name:String):Void
+  {
+    if (name == 'intro')
+    {
+      if (PlayerRegistry.instance.hasNewCharacter())
+      {
+        currentState = NewUnlock;
       }
       else
-        offset.set(0, 0); */
+      {
+        currentState = Idle;
+      }
+      onIntroDone.dispatch();
+    }
+    else if (name == 'idle')
+    {
+      // trace('Finished idle')
+      if (timeIdling >= IDLE_EGG_PERIOD && !seenIdleEasterEgg)
+      {
+        currentState = IdleEasterEgg;
+      }
+      else if (timeIdling >= IDLE_CARTOON_PERIOD)
+      {
+        currentState = Cartoon;
+      }
+    }
+    else if (name == 'confirm')
+    {
+      // trace('Finished confirm');
+    }
+    else if (name == 'fistPump')
+    {
+      // trace('Finished fist pump');
+      currentState = Idle;
+    }
+    else if (name == 'idleEasterEgg')
+    {
+      // trace('Finished spook');
+      currentState = Idle;
+    }
+    else if (name == 'loss')
+    {
+      // trace('Finished loss reaction');
+      currentState = Idle;
+    }
+    else if (name == 'cartoon')
+    {
+      // trace('Finished cartoon');
+
+      // var frame:Int = FlxG.random.bool(33) ? (playableCharData?.getCartoonLoopBlinkFrame() ?? 0) : (playableCharData?.getCartoonLoopFrame() ?? 0);
+
+      // Character switches channels when the video ends, or at a 10% chance each time his idle loops.
+      /*if (FlxG.random.bool(5))
+        {
+          frame = playableCharData?.getCartoonChannelChangeFrame() ?? 0;
+          // boyfriend switches channel code?
+          // Transefer into bf.hxc in scripts/freeplay/dj
+          // runTvLogic();
+        }
+          trace('Replay idle: ${frame}'); */
+      playFlashAnimation('cartoon', true, false, false);
+      // YOU BETTER REDO THIS IN YOUR SCRIPT WITH DIFFERENT ANIMATIONS
+      // trace('Finished confirm');
+    }
+    else if (name == 'newUnlock')
+    {
+      // Animation should loop.
+    }
+    else if (name == 'charSelect')
+    {
+      onCharSelectComplete();
+    }
+    else
+    {
+      trace('Finished ${name}');
+    }
+  }
+
+  /// Draw - Logic
+  override public function draw():Void
+  {
+    checkEmptyFrame();
+
+    if (alpha == 0 || _frame.type == FlxFrameType.EMPTY) return;
+
+    if (dirty) // rarely
+      calcFrame(useFramePixels);
+
+    for (camera in getCamerasLegacy())
+    {
+      if (!camera.visible || !camera.exists || !isOnScreen(camera)) continue;
+
+      if (isSimpleRender(camera)) drawSimple(camera);
+      else
+        drawComplex(camera);
+
+      #if FLX_DEBUG
+      FlxBasic.visibleCount++;
+      #end
+    }
+
+    #if FLX_DEBUG
+    if (FlxG.debugger.drawDebug) drawDebug();
+    #end
+  }
+
+  @:noCompletion
+  override function drawSimple(camera:FlxCamera):Void
+  {
+    getScreenPosition(_point, camera).subtract(offset);
+    if (isPixelPerfectRender(camera)) _point.floor();
+
+    _point.copyTo(_flashPoint);
+    camera.copyPixels(_frame, framePixels, _flashRect, _flashPoint, colorTransform, blend, antialiasing);
+  }
+
+  @:noCompletion
+  override function drawComplex(camera:FlxCamera):Void
+  {
+    _frame.prepareMatrix(_matrix, FlxFrameAngle.ANGLE_0, checkFlipX(), checkFlipY());
+    _matrix.translate(-origin.x, -origin.y);
+    _matrix.scale(scale.x, scale.y);
+
+    if (bakedRotationAngle <= 0)
+    {
+      updateTrig();
+
+      if (angle != 0) _matrix.rotateWithTrig(_cosAngle, _sinAngle);
+    }
+
+    getScreenPosition(_point, camera).subtract(offset);
+    _point.add(origin.x, origin.y);
+    _matrix.translate(_point.x, _point.y);
+
+    if (isPixelPerfectRender(camera))
+    {
+      _matrix.tx = Math.floor(_matrix.tx);
+      _matrix.ty = Math.floor(_matrix.ty);
+    }
+
+    camera.drawPixels(_frame, framePixels, _matrix, colorTransform, blend, antialiasing, shader);
   }
 }

@@ -19,12 +19,8 @@ import funkin.data.freeplay.player.PlayerRegistry;
 import funkin.ui.freeplay.dj.BaseFreeplayDJ;
 import funkin.ui.freeplay.dj.AnimateAtlasFreeplayDJ;
 import funkin.ui.freeplay.dj.SparrowFreeplayDJ;
-/*
-
-  import funkin.ui.freeplay.dj.MultiSparrowFreeplayDJ;
-  import funkin.ui.freeplay.dj.PackerFreeplayDJ;
-
- */
+import funkin.ui.freeplay.dj.MultiSparrowFreeplayDJ;
+import funkin.ui.freeplay.dj.PackerFreeplayDJ;
 import funkin.data.freeplay.style.FreeplayStyleRegistry;
 import funkin.data.song.SongRegistry;
 import funkin.data.story.level.LevelRegistry;
@@ -858,14 +854,10 @@ class FreeplayState extends MusicBeatSubState
         dj = (scriptClass != "") ? (ScriptedAnimateAtlasFreeplayDJ.init(scriptClass, x, y, characterId)) : (new AnimateAtlasFreeplayDJ(x, y, characterId));
       case "sparrow":
         dj = (scriptClass != "") ? (ScriptedSparrowFreeplayDJ.init(scriptClass, x, y, characterId)) : (new SparrowFreeplayDJ(x, y, characterId));
-        /*case 'sparrow':
-            dj = new SparrowFreeplayDJ(x, y, characterId);
-          case 'multisparrow':
-            dj = new MultiSparrowFreeplayDJ(x, y, characterId);
-          case 'packer':
-            dj = new PackerFreeplayDJ(x, y, characterId);
-          case 'animateatlas':
-            dj = new AnimateAtlasFreeplayDJ(x, y, characterId); */
+      case 'multisparrow':
+        dj = (scriptClass != "") ? (ScriptedMultiSparrowFreeplayDJ.init(scriptClass, x, y, characterId)) : (new MultiSparrowFreeplayDJ(x, y, characterId));
+      case 'packer':
+        dj = (scriptClass != "") ? (ScriptedPackerFreeplayDJ.init(scriptClass, x, y, characterId)) : (new PackerFreeplayDJ(x, y, characterId));
     }
   }
 
