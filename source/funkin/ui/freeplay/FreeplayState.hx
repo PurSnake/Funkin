@@ -417,7 +417,7 @@ class FreeplayState extends MusicBeatSubState
             x: -dj.width * 1.6,
             speed: 0.5
           });
-
+        add(dj);
         exitMoversCharSel.set([dj],
           {
             y: -175,
@@ -690,8 +690,6 @@ class FreeplayState extends MusicBeatSubState
     {
       add(charSelectHint);
     }
-
-    if (dj != null) add(dj);
 
     // be careful not to "add()" things in here unless it's to a group that's already added to the state
     // otherwise it won't be properly attatched to funnyCamera (relavent code should be at the bottom of create())
@@ -2776,6 +2774,10 @@ class FreeplayState extends MusicBeatSubState
   public function playCurSongPreview(?daSongCapsule:SongMenuItem):Void
   {
     if (daSongCapsule == null) daSongCapsule = currentCapsule;
+
+    var previewVolume:Float = 0.7;
+    if (dj != null) previewVolume *= dj.getMusicPreviewMult();
+
     if (curSelected == 0)
     {
       FunkinSound.playMusic('freeplayRandom',
@@ -2784,7 +2786,7 @@ class FreeplayState extends MusicBeatSubState
           overrideExisting: true,
           restartTrack: false
         });
-      FlxG.sound.music.fadeIn(2, 0, 0.7);
+      FlxG.sound.music.fadeIn(2, 0, previewVolume);
     }
     else
     {
@@ -2820,8 +2822,8 @@ class FreeplayState extends MusicBeatSubState
               start: 0,
               end: 0.2
             },
-          onLoad: function() {
-            FlxG.sound.music.fadeIn(2, 0, 0.7);
+          onLoad: () -> {
+            FlxG.sound.music.fadeIn(2, 0, previewVolume);
           }
         });
       if (songDifficulty != null)

@@ -322,6 +322,11 @@ class BaseFreeplayDJ extends FlxAtlasSprite
     seenIdleEasterEgg = false;
   }
 
+  public function getMusicPreviewMult():Float
+  {
+    return 1;
+  }
+
   public function onConfirm():Void
   {
     // We really don't want to play anything but the new character animation here.
