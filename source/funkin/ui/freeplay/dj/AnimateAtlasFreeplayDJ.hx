@@ -6,7 +6,7 @@ import funkin.data.freeplay.player.PlayerRegistry;
 
 /**
  * A script that can be tied to a AnimateAtlasFreeplayDJ.
- * Create a scripted class that extends FunkinSprite to use this.
+ * Create a scripted class that extends AnimateAtlasFreeplayDJ to use this.
  */
 @:hscriptClass
 class ScriptedAnimateAtlasFreeplayDJ extends AnimateAtlasFreeplayDJ implements polymod.hscript.HScriptedClass {}

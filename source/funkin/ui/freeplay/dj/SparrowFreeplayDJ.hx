@@ -6,7 +6,7 @@ import funkin.data.freeplay.player.PlayerRegistry;
 
 /**
  * A script that can be tied to a SparrowFreeplayDJ.
- * Create a scripted class that extends FunkinSprite to use this.
+ * Create a scripted class that extends SparrowFreeplayDJ to use this.
  */
 @:hscriptClass
 class ScriptedSparrowFreeplayDJ extends SparrowFreeplayDJ implements polymod.hscript.HScriptedClass {}
@@ -24,8 +24,6 @@ class SparrowFreeplayDJ extends BaseFreeplayDJ
     animation.onLoop.add(onFinishAnim);
 
     animation.onFrameChange.add((name, num, index) -> trace('name:$name, num:$num, index:$index'));
-
-    trace(listAnimations());
   }
 
   function loadSpritesheet()
@@ -42,7 +40,6 @@ class SparrowFreeplayDJ extends BaseFreeplayDJ
   function loadAnimations()
   {
     FlxAnimationUtil.addAtlasAnimations(this, playableCharData.getAnimationsList());
-    trace(playableCharData.getAnimationsList());
   }
 
   override public function listAnimations():Array<String>
@@ -58,7 +55,6 @@ class SparrowFreeplayDJ extends BaseFreeplayDJ
   override public function playFlashAnimation(id:String, Force:Bool = false, Reverse:Bool = false, Loop:Bool = false, Frame:Int = 0):Void
   {
     // playAnimation(id, Force, Reverse, Loop, Frame);
-    trace(id, Force);
     animation.play(id, Force, Reverse, Frame);
     applyAnimOffset();
   }
@@ -72,7 +68,6 @@ class SparrowFreeplayDJ extends BaseFreeplayDJ
         var animPrefix = 'intro';
         if (animPrefix != null && (getCurrentAnimation() != animPrefix || this.animation.finished))
         {
-          trace(getCurrentAnimation());
           playFlashAnimation(animPrefix, true);
         }
         timeIdling = 0;
