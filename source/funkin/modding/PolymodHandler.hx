@@ -199,21 +199,7 @@ class PolymodHandler
       trace('  * ${mod.title} v${mod.modVersion} [${mod.id}]');
       loadedModIds.push(mod.id);
 
-      @:nullSafety(Off)
-      {
-        /*trace(mod.metadata);
-          trace(mod.metadata.exists("preferences"));
-          trace(mod.metadata.get("preferences"));
-          trace(cast(mod.metadata.get("preferences"), Array<Dynamic>));
-
-          if (mod.metadata.exists("preferences")) queueModPreferences(cast(mod.metadata.get("preferences"), Array<Dynamic>)); */
-        /*if (mod.metadata.exists("preferences"))
-          {
-            final preferencesList:Array<Dynamic> = cast mod.metadata.get("preferences");
-            trace(preferencesList);
-            queueModPreferences(preferencesList);
-        }*/
-      }
+      queueModPreferences(mod);
     }
 
     #if FEATURE_DEBUG_FUNCTIONS
@@ -254,14 +240,38 @@ class PolymodHandler
     #end
   }
 
-  // This function will exist on pure trust, hopes and dreams.
-  static function queueModPreferences(prefferenceList:Array<Dynamic>):Void
+  static function parsePreferences(prefsData:Dynamic):Array<ModPreferenceData>
   {
-    trace(prefferenceList);
-    for (preference in prefferenceList)
+    return [];
+  }
+
+  // This function will exist on pure trust, hopes and dreams.
+
+  @:nullSafety(Off)
+  static function queueModPreferences(mod:ModMetadata):Void
+  {
+    trace('--- Processing mod: ${mod.id} ---');
+
+    if (!mod.metadata.exists("preferences"))
     {
-      modsPreferences.push(new ModPreference(preference.saveId ?? "penis"));
+      trace('No preferences found');
+      return;
     }
+
+    var prefsData:Dynamic = mod.metadata.get("preferences");
+    trace(prefsData);
+    var preferencesArray:Array<ModPreferenceData> = parsePreferences(prefsData);
+
+    trace('Parsed ${preferencesArray.length} preferences');
+
+    for (pref in preferencesArray)
+    {
+      var preference = new ModPreference(pref.saveId);
+      modsPreferences.push(preference);
+      trace('Added preference: ${pref.saveId}');
+    }
+
+    trace('--- End processing ${mod.id} ---\n');
   }
 
   static function buildFileSystem():polymod.fs.ZipFileSystem
@@ -569,6 +579,15 @@ class PolymodHandler
     NoteKindManager.loadScripts();
     ModuleHandler.loadModuleCache();
   }
+}
+
+typedef ModPreferenceData =
+{
+  ?name:String,
+  ?desc:String,
+  ?type:String,
+  ?defaultValue:Dynamic,
+  saveId:String
 }
 
 class ModPreference
