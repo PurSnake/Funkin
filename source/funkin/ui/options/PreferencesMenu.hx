@@ -196,6 +196,11 @@ class PreferencesMenu extends Page<OptionsState.OptionsMenuPageName>
       Preferences.previewOnSave = value;
     }, Preferences.previewOnSave);
     #end
+
+    for (preference in funkin.modding.PolymodHandler.modsPreferences)
+    {
+      trace(preference);
+    }
   }
 
   override function update(elapsed:Float):Void
