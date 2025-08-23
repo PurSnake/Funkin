@@ -98,6 +98,8 @@ class CharSelectSubState extends MusicBeatSubState
 
   var cutoutSize:Float = 0;
 
+  public var squadUnlockedSpr:FlxSprite;
+
   public function new(?params:CharSelectSubStateParams)
   {
     super();
@@ -442,6 +444,12 @@ class CharSelectSubState extends MusicBeatSubState
         }
       });
 
+    squadUnlockedSpr = new FunkinSprite();
+    squadUnlockedSpr.loadGraphic(Paths.image("charSelect/SQUADANNOUNCEMENT"));
+    squadUnlockedSpr.x = -squadUnlockedSpr.width;
+    squadUnlockedSpr.y = FlxG.height - squadUnlockedSpr.height - 5;
+    add(squadUnlockedSpr);
+
     var blackScreen = new FunkinSprite().makeSolidColor(FlxG.width * 2, FlxG.height * 2, 0xFF000000);
     blackScreen.x = -(FlxG.width * 0.5);
     blackScreen.y = -(FlxG.height * 0.5);
@@ -473,6 +481,9 @@ class CharSelectSubState extends MusicBeatSubState
 
   function checkNewChar():Void
   {
+    FlxTween.tween(squadUnlockedSpr, {x: 15}, 2,
+      {ease: FlxEase.backOut, onComplete: _ -> FlxTween.tween(squadUnlockedSpr, {x: -squadUnlockedSpr.width - 25}, 1, {startDelay: 10})});
+
     if (nonLocks.length > 0) selectTimer.start(2, (_) -> {
       unLock();
     });
@@ -772,6 +783,36 @@ class CharSelectSubState extends MusicBeatSubState
       });
   }
 
+  function goToLunatic():Void
+  {
+    allowInput = false;
+    autoFollow = false;
+
+    FlxTween.tween(cursor, {alpha: 0}, 0.8, {ease: FlxEase.expoOut});
+    FlxTween.tween(cursorBlue, {alpha: 0}, 0.8, {ease: FlxEase.expoOut});
+    FlxTween.tween(cursorDarkBlue, {alpha: 0}, 0.8, {ease: FlxEase.expoOut});
+    FlxTween.tween(cursorConfirmed, {alpha: 0}, 0.8, {ease: FlxEase.expoOut});
+
+    FlxTween.tween(barthing, {y: barthing.y - 80}, 0.8, {ease: FlxEase.backIn});
+    FlxTween.tween(nametag, {y: nametag.y - 80}, 0.8, {ease: FlxEase.backIn});
+    FlxTween.tween(dipshitBacking, {y: dipshitBacking.y - 210}, 0.8, {ease: FlxEase.backIn});
+    FlxTween.tween(chooseDipshit, {y: chooseDipshit.y - 200}, 0.8, {ease: FlxEase.backIn});
+    FlxTween.tween(dipshitBlur, {y: dipshitBlur.y - 220}, 0.8, {ease: FlxEase.backIn});
+    for (index => member in grpIcons.members)
+    {
+      // member.y += 300;
+      FlxTween.tween(member, {y: member.y - 300}, 0.8, {ease: FlxEase.backIn});
+    }
+    FlxG.camera.follow(camFollow, LOCKON);
+    FlxTween.tween(transitionGradient, {y: -150}, 0.8, {ease: FlxEase.backIn});
+    fadeShader.fade(1.0, 0, 0.8, {ease: FlxEase.quadIn});
+    FlxTween.tween(camFollow, {y: camFollow.y + 150}, 0.8,
+      {
+        ease: FlxEase.backIn,
+        onComplete: _ -> FlxG.switchState(() -> new funkin.ui.charSelect.lunatic.LunaticSelect())
+      });
+  }
+
   var holdTmrUp:Float = 0;
   var holdTmrDown:Float = 0;
   var holdTmrLeft:Float = 0;
@@ -783,6 +824,8 @@ class CharSelectSubState extends MusicBeatSubState
 
   var mobileDeny:Bool = false;
   var mobileAccept:Bool = false;
+
+  var pressedTab:Bool = false;
 
   override public function update(elapsed:Float):Void
   {
@@ -799,6 +842,19 @@ class CharSelectSubState extends MusicBeatSubState
 
     if (allowInput && !pressedSelect)
     {
+      if (!pressedTab && (FlxG.keys.justPressed.TAB))
+      {
+        mobileDeny = spamUp = spamDown = spamLeft = spamRight = false;
+        pressedTab = cursorConfirmed.visible = true;
+        grpCursors.visible = false;
+        FlxG.sound.play(Paths.sound('CS_confirm'));
+
+        FlxTween.tween(FlxG.sound.music, {pitch: 0.0}, 1.5, {ease: FlxEase.quadInOut});
+        FlxTween.tween(FlxG.sound.music, {volume: 0.0}, 2, {ease: FlxEase.quadInOut});
+        pressedSelect = true;
+        selectTimer.start(1.9, (_) -> goToLunatic());
+      }
+
       #if FEATURE_TOUCH_CONTROLS
       if (TouchUtil.pressed || TouchUtil.justReleased)
       {
@@ -922,7 +978,10 @@ class CharSelectSubState extends MusicBeatSubState
     {
       curChar = availableChars.get(getCurrentSelected());
 
-      if (allowInput && pressedSelect && (controls.BACK #if FEATURE_TOUCH_CONTROLS || (mobileDeny && TouchUtil.justReleased) #end))
+      if (allowInput
+        && pressedSelect
+        && (controls.BACK #if FEATURE_TOUCH_CONTROLS || (mobileDeny && TouchUtil.justReleased) #end)
+        && !pressedTab)
       {
         mobileDeny = false;
         cursorConfirmed.visible = false;
@@ -967,21 +1026,11 @@ class CharSelectSubState extends MusicBeatSubState
         playerChill.playAnimation("select");
         gfChill.playAnimation("confirm", true, false, true);
         pressedSelect = true;
-        selectTimer.start(1.5, (_) -> {
-          // pressedSelect = false;
-          // FlxG.switchState(FreeplayState.build(
-          //   {
-          //     {
-          //       character: curChar
-          //     }
-          //   }));
-          goToFreeplay();
-        });
+        selectTimer.start(1.5, (_) -> goToFreeplay());
       }
       #if FEATURE_TOUCH_CONTROLS
       else if (pressedSelect && TouchUtil.justReleased) mobileDeny = true;
       #end
-
       mobileAccept = false;
     }
     else
@@ -1162,7 +1211,7 @@ class CharSelectSubState extends MusicBeatSubState
               memb.filters = selectedBizz;
               memb.scale.set(2.6, 2.6);
             }
-            if (pressedSelect && memb.animation.curAnim.name == 'idle') memb.animation.play('confirm');
+            if (pressedSelect && memb.animation.curAnim.name == 'idle' && !pressedTab) memb.animation.play('confirm');
             if (autoFollow && !pressedSelect && memb.animation.curAnim.name != 'idle')
             {
               memb.animation.play("confirm", false, true);
