@@ -8,6 +8,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import funkin.audio.FunkinSound;
 import flixel.util.FlxSort;
+import flixel.util.FlxDestroyUtil;
 import funkin.modding.PolymodHandler;
 import funkin.modding.events.ScriptEvent;
 import funkin.modding.module.ModuleHandler;
@@ -42,13 +43,14 @@ class MusicBeatState extends FlxTransitionableState implements IEventHandler
 
   var _conductorInUse:Null<Conductor>;
 
+  public var ratio:FlxRatioHandler = new FlxRatioHandler();
+
   function get_conductorInUse():Conductor
   {
-    if (_conductorInUse == null) return Conductor.instance;
-    return _conductorInUse;
+    return _conductorInUse ?? Conductor.instance;
   }
 
-  function set_conductorInUse(value:Conductor):Conductor
+  inline function set_conductorInUse(value:Conductor):Conductor
   {
     return _conductorInUse = value;
   }
@@ -151,6 +153,7 @@ class MusicBeatState extends FlxTransitionableState implements IEventHandler
     if (camControls != null) FlxG.cameras.remove(camControls);
     #end
 
+    ratio = FlxDestroyUtil.destroy(ratio);
     Conductor.beatHit.remove(this.beatHit);
     Conductor.stepHit.remove(this.stepHit);
   }
@@ -191,8 +194,8 @@ class MusicBeatState extends FlxTransitionableState implements IEventHandler
     // Both have an xPos of 0, but a width equal to the full screen.
     // The rightWatermarkText is right aligned, which puts the text in the correct spot.
     // Their xPos is only changed when there's a notch on the device so it doesn't get covered by it.
-    leftWatermarkText = new FlxText(funkin.ui.FullScreenScaleMode.gameNotchSize.x, FlxG.height - 18, FlxG.width, '', 12);
-    rightWatermarkText = new FlxText(-(funkin.ui.FullScreenScaleMode.gameNotchSize.x), FlxG.height - 18, FlxG.width, '', 12);
+    leftWatermarkText = new FlxText(0, FlxG.initialHeight - 18, FlxG.initialWidth, '', 12);
+    rightWatermarkText = new FlxText(0, FlxG.initialHeight - 18, FlxG.initialWidth, '', 12);
 
     // 100,000 should be good enough.
     leftWatermarkText.zIndex = 100000;
@@ -204,6 +207,9 @@ class MusicBeatState extends FlxTransitionableState implements IEventHandler
 
     add(leftWatermarkText);
     add(rightWatermarkText);
+
+    ratio.add(leftWatermarkText, 1, -1);
+    ratio.add(rightWatermarkText, -1, -1);
   }
 
   public function dispatchEvent(event:ScriptEvent)

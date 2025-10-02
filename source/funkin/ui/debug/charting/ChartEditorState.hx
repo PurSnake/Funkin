@@ -731,7 +731,7 @@ class ChartEditorState extends UIState // UIState derives from MusicBeatState
   /**
    * The camera component we're using for this state.
    */
-  var uiCamera:FlxCamera;
+  var uiCamera:FunkinCamera;
 
   // Audio
 
@@ -2369,6 +2369,7 @@ class ChartEditorState extends UIState // UIState derives from MusicBeatState
     loadPreferences();
 
     uiCamera = new FunkinCamera('chartEditorUI');
+    uiCamera.useInitialSizes = false;
     FlxG.cameras.reset(uiCamera);
 
     buildDefaultSongData();

@@ -168,6 +168,7 @@ class Main extends Sprite
     #end
 
     #if !html5
+    untyped FlxG.cameras = new funkin.util.plugins.FlxFullScreenCameraFrontEnd();
     FlxG.scaleMode = new FullScreenScaleMode();
     #end
 

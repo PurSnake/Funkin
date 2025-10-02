@@ -232,6 +232,7 @@ class PauseSubState extends MusicBeatSubState
     super();
     this.currentMode = params?.mode ?? Standard;
     this.onPause = onPause;
+    FlxG.signals.gameResized.add(onResize);
   }
 
   // ===============
@@ -295,6 +296,8 @@ class PauseSubState extends MusicBeatSubState
     hapticTimer = null;
     pauseMusic.stop();
     onPause = null;
+
+    FlxG.signals.gameResized.remove(onResize);
   }
 
   // ===============
@@ -356,11 +359,13 @@ class PauseSubState extends MusicBeatSubState
   function buildBackground():Void
   {
     // Using state.bgColor causes bugs!
-    background = new FunkinSprite(0, 0);
-    background.makeSolidColor(camera.width, camera.height, FlxColor.BLACK);
+    background = new FunkinSprite();
+    background.makeSolidColor(FlxG.width, FlxG.height, FlxColor.BLACK);
     background.alpha = 0.0;
     background.scrollFactor.set(0, 0);
     background.updateHitbox();
+    background.setPosition((FlxG.initialWidth - background.width) / 2, (FlxG.initialHeight - background.height) / 2);
+
     add(background);
 
     #if mobile
@@ -373,7 +378,7 @@ class PauseSubState extends MusicBeatSubState
     pauseButton.scale.set(0.8, 0.8);
     pauseButton.updateHitbox();
     pauseButton.animation.play("confirm");
-    pauseButton.setPosition((FlxG.width - pauseButton.width) - 35, 35);
+    pauseButton.setPosition((FlxG.initialWidth - pauseButton.width) - 35, 35);
 
     pauseCircle = FunkinSprite.create(0, 0, 'pauseCircle');
     pauseCircle.scale.set(0.84, 0.8);
@@ -387,6 +392,12 @@ class PauseSubState extends MusicBeatSubState
     #end
   }
 
+  override function onResize(width, height)
+  {
+    background.scale.set(FlxG.width / 2, FlxG.height / 2);
+    background.setPosition((FlxG.initialWidth - background.width) / 2, (FlxG.initialHeight - background.height) / 2);
+  }
+
   /**
    * Render the metadata in the top right.
    */
@@ -396,9 +407,8 @@ class PauseSubState extends MusicBeatSubState
     metadata.scrollFactor.set(0, 0);
     add(metadata);
 
-    var metadataSong:FlxText = new FlxText(20,
-      #if mobile (PlayState.instance?.isPracticeMode ?? false) ? camera.height - 185 : camera.height - 155 #else 15 #end,
-      camera.width - Math.max(40, funkin.ui.FullScreenScaleMode.gameNotchSize.x), 'Song Name');
+    var metadataSong:FlxText = new FlxText(20, #if mobile (PlayState.instance?.isPracticeMode ?? false) ? FlxG.height - 185 : FlxG.height - 155 #else 15 #end,
+      FlxG.width - 40, 'Song Name');
     metadataSong.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, FlxTextAlign.RIGHT);
     if (PlayState.instance?.currentChart != null)
     {
@@ -406,9 +416,9 @@ class PauseSubState extends MusicBeatSubState
     }
     metadataSong.scrollFactor.set(0, 0);
     metadata.add(metadataSong);
+    ratio.add(metadataSong, -1, 1);
 
-    metadataArtist = new FlxText(20, metadataSong.y + 32, camera.width - Math.max(40, funkin.ui.FullScreenScaleMode.gameNotchSize.x),
-      'Artist: ${Constants.DEFAULT_ARTIST}');
+    metadataArtist = new FlxText(20, metadataSong.y + 32, FlxG.width - 40, 'Artist: ${Constants.DEFAULT_ARTIST}');
     metadataArtist.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, FlxTextAlign.RIGHT);
     if (PlayState.instance?.currentChart != null)
     {
@@ -416,9 +426,9 @@ class PauseSubState extends MusicBeatSubState
     }
     metadataArtist.scrollFactor.set(0, 0);
     metadata.add(metadataArtist);
+    ratio.add(metadataArtist, -1, 1);
 
-    var metadataDifficulty:FlxText = new FlxText(20, metadataArtist.y + 32, camera.width - Math.max(40, funkin.ui.FullScreenScaleMode.gameNotchSize.x),
-      'Difficulty: ');
+    var metadataDifficulty:FlxText = new FlxText(20, metadataArtist.y + 32, FlxG.width - 40, 'Difficulty: ');
     metadataDifficulty.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, FlxTextAlign.RIGHT);
     if (PlayState.instance?.currentDifficulty != null)
     {
@@ -426,29 +436,31 @@ class PauseSubState extends MusicBeatSubState
     }
     metadataDifficulty.scrollFactor.set(0, 0);
     metadata.add(metadataDifficulty);
+    ratio.add(metadataDifficulty, -1, 1);
 
-    metadataDeaths = new FlxText(20, metadataDifficulty.y + 32, camera.width - Math.max(40, funkin.ui.FullScreenScaleMode.gameNotchSize.x),
-      '${PlayState.instance?.deathCounter} Blue Balls');
+    metadataDeaths = new FlxText(20, metadataDifficulty.y + 32, FlxG.width - 40, '${PlayState.instance?.deathCounter} Blue Balls');
     metadataDeaths.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, FlxTextAlign.RIGHT);
     metadataDeaths.scrollFactor.set(0, 0);
     metadata.add(metadataDeaths);
+    ratio.add(metadataDeaths, -1, 1);
 
-    metadataPractice = new FlxText(20, metadataDeaths.y + 32, camera.width - Math.max(40, funkin.ui.FullScreenScaleMode.gameNotchSize.x), 'PRACTICE MODE');
+    metadataPractice = new FlxText(20, metadataDeaths.y + 32, FlxG.width - 40, 'PRACTICE MODE');
     metadataPractice.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, FlxTextAlign.RIGHT);
     metadataPractice.visible = PlayState.instance?.isPracticeMode ?? false;
     metadataPractice.scrollFactor.set(0, 0);
     metadata.add(metadataPractice);
+    ratio.add(metadataPractice, -1, 1);
 
     // Right side
-    offsetText = new FlxText(20, metadataSong.y - 12, (camera.width + 10) - Math.max(40, funkin.ui.FullScreenScaleMode.gameNotchSize.x),
-      'Global Offset: ${Preferences.globalOffset ?? 0}ms');
+    offsetText = new FlxText(20, metadataSong.y - 12, FlxG.width - 30, 'Global Offset: ${Preferences.globalOffset ?? 0}ms');
     offsetText.setFormat(Paths.font('vcr.ttf'), 16, FlxColor.WHITE, FlxTextAlign.RIGHT);
     offsetText.scrollFactor.set(0, 0);
+    ratio.add(offsetText, -1, 1);
 
-    offsetTextInfo = new FlxText(20, offsetText.y + 16, (camera.width + 10) - Math.max(40, funkin.ui.FullScreenScaleMode.gameNotchSize.x),
-      'Hold SHIFT-UP/DOWN,\nto change the offset.');
+    offsetTextInfo = new FlxText(20, offsetText.y + 16, FlxG.width - 30, 'Hold SHIFT-UP/DOWN,\nto change the offset.');
     offsetTextInfo.setFormat(Paths.font('vcr.ttf'), 16, FlxColor.WHITE, FlxTextAlign.RIGHT);
     offsetTextInfo.scrollFactor.set(0, 0);
+    ratio.add(offsetTextInfo, -1, 1);
 
     offsetText.y = FlxG.height - (offsetText.height + offsetText.height + 40);
     offsetTextInfo.y = offsetText.y + offsetText.height + 4;
@@ -725,8 +737,8 @@ class PauseSubState extends MusicBeatSubState
         FlxTween.tween(text, {x: 150}, 0.2, {ease: FlxEase.backInOut});
       }
       #else
-      var targetX = FlxMath.remapToRange((entryIndex - currentEntry), 0, 1, 0, 1.3) * 20 + Math.max(90, funkin.ui.FullScreenScaleMode.gameNotchSize.x);
-      var targetY = FlxMath.remapToRange((entryIndex - currentEntry), 0, 1, 0, 1.3) * 120 + (camera.height * 0.48);
+      var targetX = FlxMath.remapToRange((entryIndex - currentEntry), 0, 1, 0, 1.3) * 20 + 90 - (FullScreenScaleMode.cutoutSize.x / 2);
+      var targetY = FlxMath.remapToRange((entryIndex - currentEntry), 0, 1, 0, 1.3) * 120 + (FlxG.height * 0.48);
       FlxTween.globalManager.cancelTweensOf(text);
       FlxTween.tween(text, {x: targetX, y: targetY}, 0.33, {ease: FlxEase.quartOut});
       #end
@@ -810,6 +822,7 @@ class PauseSubState extends MusicBeatSubState
       menuEntryText = new FlxTypedSpriteGroup<AtlasText>();
       menuEntryText.scrollFactor.set(0, 0);
       add(menuEntryText);
+      ratio.add(menuEntryText);
     }
     menuEntryText.clear();
 
@@ -827,11 +840,7 @@ class PauseSubState extends MusicBeatSubState
       {
         // Handle visible entries.
         #if mobile
-        // var yPos:Float = (150 * entryIndex) + 100;
-
-        // var yPos:Float = (140 * entryIndex) + 150;
         var yPos:Float = (105 * entryIndex) + 150;
-
         var text:AtlasText = new AtlasText(110, yPos, entry.text, AtlasFont.BOLD);
         text.scrollFactor.set(0, 0);
         text.alpha = 0;
@@ -859,7 +868,7 @@ class PauseSubState extends MusicBeatSubState
 
         entry.sprite = text;
         #end
-
+        ratio.moveObj(text);
         entryIndex++;
       }
     }

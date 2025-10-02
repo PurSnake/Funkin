@@ -87,11 +87,11 @@ class TitleState extends MusicBeatState
 
     persistentUpdate = true;
 
-    var bg:FunkinSprite = new FunkinSprite(-1).makeSolidColor(FlxG.width + 2, FlxG.height, FlxColor.BLACK);
+    var bg:FunkinSprite = new FunkinSprite(-1).makeSolidColor(FlxG.initialWidth * 2, FlxG.initialHeight * 2, FlxColor.BLACK);
     bg.screenCenter();
     add(bg);
 
-    logoBl = new FlxSprite(-150 + (FullScreenScaleMode.gameCutoutSize.x / 2.5), -100);
+    logoBl = new FlxSprite(-150, -100);
     logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
     logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
     logoBl.animation.play('bump');
@@ -100,11 +100,10 @@ class TitleState extends MusicBeatState
 
     outlineShaderShit = new TitleOutline();
 
-    gfDance = new FlxSpriteOverlay((FlxG.width * 0.4) + FullScreenScaleMode.gameCutoutSize.x / 2.5, FlxG.height * 0.07);
+    gfDance = new FlxSpriteOverlay((FlxG.initialWidth * 0.4), FlxG.initialHeight * 0.07);
     gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
     gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
     gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-
     // maskShader.swagSprX = gfDance.x;
     // maskShader.swagMaskX = gfDance.x + 200;
     // maskShader.frameUV = gfDance.frame.uv;
@@ -120,10 +119,10 @@ class TitleState extends MusicBeatState
 
     #if mobile
     // shift it a bit more to the left on mobile!!
-    titleText = new FlxSprite(50 + (FullScreenScaleMode.gameCutoutSize.x / 2), FlxG.height * 0.8);
+    titleText = new FlxSprite(50, FlxG.initialHeight * 0.8);
     titleText.frames = Paths.getSparrowAtlas('titleEnter_mobile');
     #else
-    titleText = new FlxSprite(100 + (FullScreenScaleMode.gameCutoutSize.x / 2), FlxG.height * 0.8);
+    titleText = new FlxSprite(100, FlxG.initialHeight * 0.8);
     titleText.frames = Paths.getSparrowAtlas('titleEnter');
     #end
     titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
@@ -401,7 +400,7 @@ class TitleState extends MusicBeatState
     for (i in 0...textArray.length)
     {
       var money:AtlasText = new AtlasText(0, 0, textArray[i], AtlasFont.BOLD);
-      money.screenCenter(X);
+      money.x = (FlxG.initialWidth - money.width) / 2;
       money.y += (i * 60) + 200;
       // credGroup.add(money);
       textGroup.add(money);
@@ -415,7 +414,7 @@ class TitleState extends MusicBeatState
     HapticUtil.vibrate();
 
     var coolText:AtlasText = new AtlasText(0, 0, text.trim(), AtlasFont.BOLD);
-    coolText.screenCenter(X);
+    coolText.x = (FlxG.initialWidth - coolText.width) / 2;
     coolText.y += (textGroup.length * 60) + 200;
     textGroup.add(coolText);
   }

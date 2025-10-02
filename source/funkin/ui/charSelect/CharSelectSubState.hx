@@ -96,13 +96,12 @@ class CharSelectSubState extends MusicBeatSubState
   // var blackScreen:FunkinSprite;
   var charHitbox:FlxObject = new FlxObject();
 
-  var cutoutSize:Float = 0;
-
   public function new(?params:CharSelectSubStateParams)
   {
     super();
     rememberedChar = params?.character ?? Constants.DEFAULT_CHARACTER;
     loadAvailableCharacters();
+    FlxG.signals.gameResized.add(onResize);
   }
 
   function loadAvailableCharacters():Void
@@ -133,20 +132,18 @@ class CharSelectSubState extends MusicBeatSubState
   {
     super.create();
 
-    cutoutSize = FullScreenScaleMode.gameCutoutSize.x / 2;
-
     bopInfo = FramesJSFLParser.parse(Paths.file("images/charSelect/iconBopInfo/iconBopInfo.txt"));
     if (bopInfo == null)
     {
       trace("[ERROR] Failed to load data for bopInfo, is the path provided correct?");
     }
 
-    var bg:FlxSprite = new FlxSprite(cutoutSize + -153, -140);
+    var bg:FlxSprite = new FlxSprite(-153, -140);
     bg.loadGraphic(Paths.image('charSelect/charSelectBG'));
     bg.scrollFactor.set(0.1, 0.1);
     add(bg);
 
-    var crowd:FlxAtlasSprite = new FlxAtlasSprite(cutoutSize, 0, Paths.animateAtlas("charSelect/crowd"));
+    var crowd:FlxAtlasSprite = new FlxAtlasSprite(0, 0, Paths.animateAtlas("charSelect/crowd"));
     crowd.anim.play();
     crowd.anim.onComplete.add(function() {
       crowd.anim.play();
@@ -154,17 +151,18 @@ class CharSelectSubState extends MusicBeatSubState
     crowd.scrollFactor.set(0.3, 0.3);
     add(crowd);
 
-    var stageSpr:FlxAtlasSprite = new FlxAtlasSprite(cutoutSize + -2, 1, Paths.animateAtlas("charSelect/charSelectStage"));
+    var stageSpr:FlxAtlasSprite = new FlxAtlasSprite(-2, 1, Paths.animateAtlas("charSelect/charSelectStage"));
     stageSpr.anim.play("");
     stageSpr.anim.onComplete.add(function() {
       stageSpr.anim.play("");
     });
     add(stageSpr);
 
-    var curtains:FlxSprite = new FlxSprite(cutoutSize + (-47 - 165), -49 - 50);
+    var curtains:FlxSprite = new FlxSprite(-212, -99);
     curtains.loadGraphic(Paths.image('charSelect/curtains'));
     curtains.scrollFactor.set(1.4, 1.4);
     add(curtains);
+    ratio.moveObj(curtains);
 
     barthing.anim.play("");
     barthing.anim.onComplete.add(function() {
@@ -178,11 +176,11 @@ class CharSelectSubState extends MusicBeatSubState
     barthing.y += 80;
     FlxTween.tween(barthing, {y: barthing.y - 80}, 1.3, {ease: FlxEase.expoOut});
 
-    var charLight:FlxSprite = new FlxSprite(cutoutSize + 800, 250);
+    var charLight:FlxSprite = new FlxSprite(800, 250);
     charLight.loadGraphic(Paths.image('charSelect/charLight'));
     add(charLight);
 
-    var charLightGF:FlxSprite = new FlxSprite(cutoutSize + 180, 240);
+    var charLightGF:FlxSprite = new FlxSprite(180, 240);
     charLightGF.loadGraphic(Paths.image('charSelect/charLight'));
     add(charLightGF);
 
@@ -190,16 +188,15 @@ class CharSelectSubState extends MusicBeatSubState
     {
       gfChill = new CharSelectGF();
       gfChill.switchGF(character);
-      gfChill.x += cutoutSize;
       add(gfChill);
 
-      playerChillOut = new CharSelectPlayer(cutoutSize, 0);
-      playerChillOut.switchChar(character, false);
+      playerChillOut = new CharSelectPlayer(0, 0);
+      playerChillOut.switchChar(character);
       playerChillOut.visible = false;
       add(playerChillOut);
 
-      playerChill = new CharSelectPlayer(cutoutSize, 0);
-      playerChill.switchChar(character, false);
+      playerChill = new CharSelectPlayer(0, 0);
+      playerChill.switchChar(character);
       add(playerChill);
     }
 
@@ -221,7 +218,7 @@ class CharSelectSubState extends MusicBeatSubState
     else
       setupPlayerChill(Constants.DEFAULT_CHARACTER);
 
-    var speakers:FlxAtlasSprite = new FlxAtlasSprite(cutoutSize - 10, 0, Paths.animateAtlas("charSelect/charSelectSpeakers"));
+    var speakers:FlxAtlasSprite = new FlxAtlasSprite(-10, 0, Paths.animateAtlas("charSelect/charSelectSpeakers"));
     speakers.anim.play("");
     speakers.anim.onComplete.add(function() {
       speakers.anim.play("");
@@ -229,20 +226,21 @@ class CharSelectSubState extends MusicBeatSubState
     speakers.scrollFactor.set(1.8, 1.8);
     speakers.scale.set(1.05, 1.05);
     add(speakers);
+    ratio.moveObj(speakers);
 
-    var fgBlur:FlxSprite = new FlxSprite(cutoutSize + -125, 170);
+    var fgBlur:FlxSprite = new FlxSprite(-125, 170);
     fgBlur.loadGraphic(Paths.image('charSelect/foregroundBlur'));
     fgBlur.blend = openfl.display.BlendMode.MULTIPLY;
     add(fgBlur);
 
-    dipshitBlur = new FlxSprite(cutoutSize + 419, -65);
+    dipshitBlur = new FlxSprite(419, -65);
     dipshitBlur.frames = Paths.getSparrowAtlas("charSelect/dipshitBlur");
     dipshitBlur.animation.addByPrefix('idle', "CHOOSE vertical offset instance 1", 24, true);
     dipshitBlur.blend = BlendMode.ADD;
     dipshitBlur.animation.play("idle");
     add(dipshitBlur);
 
-    dipshitBacking = new FlxSprite(cutoutSize + 423, -17);
+    dipshitBacking = new FlxSprite(423, -17);
     dipshitBacking.frames = Paths.getSparrowAtlas("charSelect/dipshitBacking");
     dipshitBacking.animation.addByPrefix('idle', "CHOOSE horizontal offset instance 1", 24, true);
     dipshitBacking.blend = BlendMode.ADD;
@@ -252,7 +250,7 @@ class CharSelectSubState extends MusicBeatSubState
     dipshitBacking.y += 210;
     FlxTween.tween(dipshitBacking, {y: dipshitBacking.y - 210}, 1.1, {ease: FlxEase.expoOut});
 
-    chooseDipshit = new FlxSprite(cutoutSize + 426, -13);
+    chooseDipshit = new FlxSprite(426, -13);
     chooseDipshit.loadGraphic(Paths.image('charSelect/chooseDipshit'));
     add(chooseDipshit);
 
@@ -267,7 +265,6 @@ class CharSelectSubState extends MusicBeatSubState
     dipshitBlur.scrollFactor.set();
 
     nametag = new Nametag(curChar);
-    nametag.midpointX += cutoutSize;
     add(nametag);
 
     @:privateAccess
@@ -328,7 +325,7 @@ class CharSelectSubState extends MusicBeatSubState
     grpCursors.add(cursorBlue);
     grpCursors.add(cursor);
 
-    charHitbox = new FlxObject(FlxG.width * 0.65, FlxG.height * 0.2, 300, 500);
+    charHitbox = new FlxObject(FlxG.initialWidth * 0.65, FlxG.initialHeight * 0.2, 300, 500);
     charHitbox.active = false;
     charHitbox.scrollFactor.set();
 
@@ -395,7 +392,7 @@ class CharSelectSubState extends MusicBeatSubState
     FlxG.debugger.track(this);
 
     add(camFollow);
-    camFollow.screenCenter();
+    camFollow.setPosition((FlxG.initialWidth - camFollow.width) / 2, (FlxG.initialHeight - camFollow.height) / 2);
 
     // FlxG.camera.follow(camFollow, LOCKON, 0.01);
     FlxG.camera.follow(camFollow, LOCKON);
@@ -436,7 +433,7 @@ class CharSelectSubState extends MusicBeatSubState
     FlxTween.tween(transitionGradient, {y: -720}, 1, {ease: FlxEase.expoOut});
     add(transitionGradient);
 
-    camFollow.screenCenter();
+    camFollow.setPosition((FlxG.initialWidth - camFollow.width) / 2, (FlxG.initialHeight - camFollow.height) / 2);
     camFollow.y -= 150;
     fadeShader.fade(0.0, 1.0, 0.8, {ease: FlxEase.quadOut});
     FlxTween.tween(camFollow, {y: camFollow.y + 150}, 1.5,
@@ -683,7 +680,7 @@ class CharSelectSubState extends MusicBeatSubState
 
   function updateIconPositions()
   {
-    grpIcons.x = cutoutSize + 450;
+    grpIcons.x = 450;
     grpIcons.y = 120;
     for (index => member in grpIcons.members)
     {
@@ -1044,13 +1041,13 @@ class CharSelectSubState extends MusicBeatSubState
 
     if (autoFollow == true)
     {
-      camFollow.screenCenter();
+      camFollow.setPosition((FlxG.initialWidth - camFollow.width) / 2, (FlxG.initialHeight - camFollow.height) / 2);
       camFollow.x += cursorX * 10;
       camFollow.y += cursorY * 10;
     }
 
-    cursorLocIntended.x = (cursorFactor * cursorX) + (FlxG.width / 2) - cursor.width / 2;
-    cursorLocIntended.y = (cursorFactor * cursorY) + (FlxG.height / 2) - cursor.height / 2;
+    cursorLocIntended.x = (cursorFactor * cursorX) + (FlxG.initialWidth / 2) - cursor.width / 2;
+    cursorLocIntended.y = (cursorFactor * cursorY) + (FlxG.initialHeight / 2) - cursor.height / 2;
 
     cursorLocIntended.x += cursorOffsetX;
     cursorLocIntended.y += cursorOffsetY;
@@ -1313,6 +1310,13 @@ class CharSelectSubState extends MusicBeatSubState
     grpYSpread = value;
     updateIconPositions();
     return value;
+  }
+
+  public override function destroy():Void
+  {
+    super.destroy();
+
+    FlxG.signals.gameResized.remove(onResize);
   }
 }
 

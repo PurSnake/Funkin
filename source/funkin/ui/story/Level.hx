@@ -116,9 +116,8 @@ class Level implements IRegistryEntry<LevelData>
       // Image specified
       return new FlxSprite().loadGraphic(Paths.image(_data.background));
     }
-
     // Color specified
-    var result:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, 400, FlxColor.WHITE);
+    var result:FlxSprite = new FlxSprite().makeGraphic(FlxG.initialWidth * 2, 400, FlxColor.WHITE);
     result.color = getBackgroundColor();
     return result;
   }
@@ -224,7 +223,7 @@ class Level implements IRegistryEntry<LevelData>
         else
         {
           existingProp.visible = true;
-          existingProp.x = propData.offsets[0] + FlxG.width * 0.25 * propIndex;
+          existingProp.x = propData.offsets[0] + FlxG.initialWidth * 0.25 * propIndex;
         }
       }
       else
@@ -232,7 +231,7 @@ class Level implements IRegistryEntry<LevelData>
         var propSprite:Null<LevelProp> = LevelProp.build(propData);
         if (propSprite == null) continue;
 
-        propSprite.x = propData.offsets[0] + FlxG.width * 0.25 * propIndex;
+        propSprite.x = propData.offsets[0] + FlxG.initialWidth * 0.25 * propIndex;
         props.push(propSprite);
       }
     }

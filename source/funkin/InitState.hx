@@ -171,15 +171,15 @@ class InitState extends FlxState
       var tileData:TransitionTileData = {asset: diamond, width: 32, height: 32};
 
       FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), tileData,
-        new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+        new FlxRect(-200, -200, FlxG.initialWidth * 2.1, FlxG.initialHeight));
       FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1), tileData,
-        new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+        new FlxRect(-200, -200, FlxG.initialWidth * 2.1, FlxG.initialHeight));
 
       FlxG.signals.gameResized.add(function(width:Int, height:Int) {
         FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), tileData,
-          new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+          new FlxRect(-200, -200, FlxG.initialWidth * 2.1, FlxG.initialHeight));
         FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1), tileData,
-          new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
+          new FlxRect(-200, -200, FlxG.initialWidth * 2.1, FlxG.initialHeight));
       });
 
       // SDL for some reason enables VSync on focus lost/gained in Android

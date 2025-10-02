@@ -28,6 +28,7 @@ import funkin.data.song.SongData.SongNoteData;
 import funkin.data.song.SongRegistry;
 import funkin.data.stage.StageRegistry;
 import funkin.graphics.FunkinCamera;
+import funkin.graphics.FlxFullScreenCamera;
 import funkin.graphics.FunkinSprite;
 import funkin.Highscore.Tallies;
 import funkin.input.PreciseInputManager;
@@ -541,12 +542,12 @@ class PlayState extends MusicBeatSubState
   /**
    * The camera which contains, and controls visibility of, the user interface elements.
    */
-  public var camHUD:FlxCamera;
+  public var camHUD:FunkinCamera;
 
   /**
    * The camera which contains, and controls visibility of, the stage and characters.
    */
-  public var camGame:FlxCamera;
+  public var camGame:FunkinCamera;
 
   /**
    * Simple helper debug variable, to be able to move the camera around for debug purposes
@@ -557,12 +558,12 @@ class PlayState extends MusicBeatSubState
   /**
    * The camera which contains, and controls visibility of, a video cutscene, dialogue.
    */
-  public var camCutscene:FlxCamera;
+  public var camCutscene:FlxFullScreenCamera;
 
   /**
    * The camera which contains, and controls visibility of menus when there are fake cutouts added.
    */
-  public var camCutouts:FlxCamera;
+  public var camCutouts:FlxFullScreenCamera;
 
   /**
    * The camera which contains, and controls visibility of, the subtitles.
@@ -732,11 +733,12 @@ class PlayState extends MusicBeatSubState
 
     // Cameras
     camGame = new FunkinCamera('playStateCamGame');
-    camHUD = new FlxCamera();
-    camCutscene = new FlxCamera();
-    camCutouts = new FlxCamera();
-    camSubtitles = new FlxCamera();
-    camPause = new FlxCamera();
+    camHUD = new FunkinCamera('playStateCamHud');
+    camHUD.bgColor.alpha = 0;
+    camCutscene = new FlxFullScreenCamera();
+    camCutouts = new FlxFullScreenCamera();
+    camSubtitles = new FlxFullScreenCamera();
+    camPause = new FlxFullScreenCamera();
 
     var currentChart = currentSong.getDifficulty(currentDifficulty, currentVariation);
     var noteStyleId:Null<String> = currentChart?.noteStyle;
@@ -874,7 +876,7 @@ class PlayState extends MusicBeatSubState
 
     initPreciseInputs();
 
-    FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
+    FlxG.worldBounds.set(0, 0, FlxG.initialWidth, FlxG.initialHeight);
 
     // The song is loaded and in the process of starting.
     // This gets set back to false when the chart actually starts.
@@ -1898,8 +1900,8 @@ class PlayState extends MusicBeatSubState
 
     var healthBarYPos:Float = isDownscroll ? FlxG.height * 0.1 : FlxG.height * 0.9;
 
+    healthBarBG.x = (FlxG.initialWidth - healthBarBG.width) / 2;
     healthBarBG.y = healthBarYPos;
-    healthBarBG.screenCenter(X);
     healthBarBG.scrollFactor.set(0, 0);
     healthBarBG.zIndex = 800;
     add(healthBarBG);
@@ -1929,10 +1931,6 @@ class PlayState extends MusicBeatSubState
     // Create subtitles if they are enabled.
     if (Preferences.subtitles)
     {
-      final isDownscroll:Bool = #if mobile (Preferences.controlsScheme == FunkinHitboxControlSchemes.Arrows
-        && !ControlsHandler.usingExternalInputDevice)
-        || #end Preferences.downscroll;
-
       final subtitlesAlignment:SubtitlesAlignment = isDownscroll ? SubtitlesAlignment.SUBTITLES_TOP : SubtitlesAlignment.SUBTITLES_BOTTOM;
       subtitles = new Subtitles(0, 139, subtitlesAlignment);
       subtitles.zIndex = 10000;
@@ -2135,19 +2133,16 @@ class PlayState extends MusicBeatSubState
     add(playerStrumline);
     add(opponentStrumline);
 
-    final cutoutSize = FullScreenScaleMode.gameCutoutSize.x / 2.5;
-    // Position the player strumline on the right half of the screen
-    playerStrumline.x = (FlxG.width / 2 + Constants.STRUMLINE_X_OFFSET) + (cutoutSize / 2.0); // Classic style
-    // playerStrumline.x = FlxG.width - playerStrumline.width - Constants.STRUMLINE_X_OFFSET; // Centered style
-
-    playerStrumline.y = Preferences.downscroll ? FlxG.height - playerStrumline.height - Constants.STRUMLINE_Y_OFFSET - noteStyle.getStrumlineOffsets()[1] : Constants.STRUMLINE_Y_OFFSET;
+    playerStrumline.x = (FlxG.initialWidth / 2 + Constants.STRUMLINE_X_OFFSET);
+    playerStrumline.y = Preferences.downscroll ? FlxG.initialHeight - playerStrumline.height - Constants.STRUMLINE_Y_OFFSET
+      - noteStyle.getStrumlineOffsets()[1] : Constants.STRUMLINE_Y_OFFSET;
 
     playerStrumline.zIndex = 1001;
     playerStrumline.cameras = [camHUD];
 
-    // Position the opponent strumline on the left half of the screen
-    opponentStrumline.x = Constants.STRUMLINE_X_OFFSET + cutoutSize;
-    opponentStrumline.y = Preferences.downscroll ? FlxG.height - opponentStrumline.height - Constants.STRUMLINE_Y_OFFSET - noteStyle.getStrumlineOffsets()[1] : Constants.STRUMLINE_Y_OFFSET;
+    opponentStrumline.x = Constants.STRUMLINE_X_OFFSET;
+    opponentStrumline.y = Preferences.downscroll ? FlxG.initialHeight - opponentStrumline.height - Constants.STRUMLINE_Y_OFFSET
+      - noteStyle.getStrumlineOffsets()[1] : Constants.STRUMLINE_Y_OFFSET;
 
     opponentStrumline.zIndex = 1000;
     opponentStrumline.cameras = [camHUD];
@@ -2161,6 +2156,9 @@ class PlayState extends MusicBeatSubState
 
     playerStrumline.fadeInArrows();
     opponentStrumline.fadeInArrows();
+
+    // ratio.add(playerStrumline, 0, .5);
+    // ratio.add(opponentStrumline, 0, .5);
   }
 
   /**

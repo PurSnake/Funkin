@@ -12,6 +12,7 @@ import funkin.modding.PolymodHandler;
 import funkin.util.SortUtil;
 import funkin.util.WindowUtil;
 import flixel.util.FlxSort;
+import flixel.util.FlxDestroyUtil;
 import funkin.input.Controls;
 #if mobile
 import funkin.graphics.FunkinCamera;
@@ -34,13 +35,14 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
 
   var _conductorInUse:Null<Conductor>;
 
+  public var ratio:FlxRatioHandler = new FlxRatioHandler();
+
   function get_conductorInUse():Conductor
   {
-    if (_conductorInUse == null) return Conductor.instance;
-    return _conductorInUse;
+    return _conductorInUse ?? Conductor.instance;
   }
 
-  function set_conductorInUse(value:Conductor):Conductor
+  inline function set_conductorInUse(value:Conductor):Conductor
   {
     return _conductorInUse = value;
   }
@@ -132,6 +134,7 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
     if (camControls != null) FlxG.cameras.remove(camControls);
     #end
 
+    ratio = FlxDestroyUtil.destroy(ratio);
     Conductor.beatHit.remove(this.beatHit);
     Conductor.stepHit.remove(this.stepHit);
   }
@@ -241,6 +244,9 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
 
     add(leftWatermarkText);
     add(rightWatermarkText);
+
+    ratio.add(leftWatermarkText, 1, 1);
+    ratio.add(rightWatermarkText, -1, 1);
   }
 
   /**

@@ -165,8 +165,9 @@ class StoryMenuState extends MusicBeatState
 
     updateBackground();
 
-    var black:FunkinSprite = new FunkinSprite(levelBackground.x, 0).makeSolidColor(FlxG.width, Std.int(400 + levelBackground.y), FlxColor.BLACK);
+    var black:FunkinSprite = new FunkinSprite(levelBackground.x, 0).makeSolidColor(FlxG.initialWidth * 2, Std.int(400 + levelBackground.y), FlxColor.BLACK);
     black.zIndex = levelBackground.zIndex - 1;
+    black.screenCenter(X);
     add(black);
 
     levelProps = new FlxTypedGroup<LevelProp>();
@@ -175,27 +176,29 @@ class StoryMenuState extends MusicBeatState
 
     updateProps();
 
-    tracklistText = new FlxText(FlxG.width * 0.05, levelBackground.x + levelBackground.height + 100, 0, "Tracks", 32);
+    tracklistText = new FlxText(FlxG.initialWidth * 0.05, levelBackground.y + levelBackground.height + 25, 0, "Tracks", 32);
     tracklistText.setFormat('VCR OSD Mono', 32);
     tracklistText.alignment = CENTER;
     tracklistText.color = 0xFFE55777;
     add(tracklistText);
 
-    scoreText = new FlxText(Math.max(FullScreenScaleMode.gameNotchSize.x, 10), 10, 0, 'HIGH SCORE: 42069420');
+    scoreText = new FlxText(10, 10, 0, 'HIGH SCORE: 42069420');
     scoreText.setFormat('VCR OSD Mono', 32);
     scoreText.zIndex = 1000;
     add(scoreText);
+    ratio.add(scoreText, 1, 1);
+    ratio.moveObj(scoreText);
 
-    levelTitleText = new FlxText(Math.max((FlxG.width * 0.7), FlxG.width - FullScreenScaleMode.gameNotchSize.x), 10, 0, 'LEVEL 1');
+    levelTitleText = new FlxText(0, 10, FlxG.initialWidth - 10, 'LEVEL 1');
     levelTitleText.setFormat('VCR OSD Mono', 32, FlxColor.WHITE, RIGHT);
     levelTitleText.alpha = 0.7;
     levelTitleText.zIndex = 1000;
     add(levelTitleText);
-
+    ratio.add(levelTitleText, -1, 1);
+    ratio.moveObj(levelTitleText, true);
     buildLevelTitles();
 
-    final useNotch:Bool = Math.max(35, FullScreenScaleMode.gameNotchSize.x) != 35;
-    leftDifficultyArrow = new FlxSprite(FlxG.width - (useNotch ? (FullScreenScaleMode.gameNotchSize.x) + 410 : 410), 480);
+    leftDifficultyArrow = new FlxSprite(FlxG.initialWidth - 410, 480);
     leftDifficultyArrow.frames = Paths.getSparrowAtlas('storymenu/ui/arrows');
     leftDifficultyArrow.animation.addByPrefix('idle', 'leftIdle0');
     leftDifficultyArrow.animation.addByPrefix('press', 'leftConfirm0');
@@ -205,7 +208,7 @@ class StoryMenuState extends MusicBeatState
     buildDifficultySprite(Constants.DEFAULT_DIFFICULTY);
     buildDifficultySprite();
 
-    rightDifficultyArrow = new FlxSprite(FlxG.width - (useNotch ? FullScreenScaleMode.gameNotchSize.x * 1.5 : 35), leftDifficultyArrow.y);
+    rightDifficultyArrow = new FlxSprite(FlxG.initialWidth - 35, leftDifficultyArrow.y);
     rightDifficultyArrow.frames = leftDifficultyArrow.frames;
     rightDifficultyArrow.animation.addByPrefix('idle', 'rightIdle0');
     rightDifficultyArrow.animation.addByPrefix('press', 'rightConfirm0');
@@ -225,7 +228,7 @@ class StoryMenuState extends MusicBeatState
     #end
 
     #if mobile
-    addBackButton(FlxG.width - 230, FlxG.height - 170, FlxColor.WHITE, goBack, 0.7);
+    addBackButton(FlxG.initialWidth - 230, FlxG.height - 170, FlxColor.WHITE, goBack, 0.7);
     #end
 
     #if FEATURE_TOUCH_CONTROLS
@@ -311,7 +314,7 @@ class StoryMenuState extends MusicBeatState
 
       var levelTitleItem:LevelTitle = new LevelTitle(0, Std.int(levelBackground.y + levelBackground.height + 10), level);
       levelTitleItem.targetY = ((levelTitleItem.height + 20) * levelIndex);
-      levelTitleItem.screenCenter(X);
+      levelTitleItem.x = (FlxG.initialWidth - levelTitleItem.width) / 2;
       levelTitles.add(levelTitleItem);
     }
   }
@@ -325,8 +328,6 @@ class StoryMenuState extends MusicBeatState
     scoreText.text = 'LEVEL SCORE: ${Math.round(highScoreLerp)}';
 
     levelTitleText.text = currentLevel.getTitle();
-
-    levelTitleText.x = FlxG.width - (levelTitleText.width + Math.max(10, FullScreenScaleMode.gameNotchSize.x)); // Right align.
 
     handleKeyPresses();
 
@@ -645,7 +646,7 @@ class StoryMenuState extends MusicBeatState
     {
       // Build a new background and display it immediately.
       levelBackground = currentLevel.buildBackground();
-      levelBackground.x = 0;
+      levelBackground.x = (FlxG.initialWidth - levelBackground.width) / 2;
       levelBackground.y = 56;
       levelBackground.zIndex = 100;
       levelBackground.alpha = 1.0; // Not hidden.
@@ -689,7 +690,7 @@ class StoryMenuState extends MusicBeatState
 
         // Build a new background and fade it in.
         levelBackground = currentLevel.buildBackground();
-        levelBackground.x = 0;
+        levelBackground.x = (FlxG.initialWidth - levelBackground.width) / 2;
         levelBackground.y = 56;
         levelBackground.alpha = 0.0; // Hidden to start.
         levelBackground.zIndex = 100;
@@ -707,7 +708,6 @@ class StoryMenuState extends MusicBeatState
   {
     for (ind => prop in currentLevel.buildProps(levelProps.members))
     {
-      prop.x += (FullScreenScaleMode.gameCutoutSize.x / 4);
       prop.zIndex = 1000;
       if (levelProps.members[ind] != prop) levelProps.replace(levelProps.members[ind], prop) ?? levelProps.add(prop);
     }
@@ -720,8 +720,8 @@ class StoryMenuState extends MusicBeatState
     tracklistText.text = 'TRACKS\n\n';
     tracklistText.text += currentLevel.getSongDisplayNames(currentDifficultyId).join('\n');
 
-    tracklistText.screenCenter(X);
-    tracklistText.x -= (FlxG.width * 0.35);
+    tracklistText.x = (FlxG.initialWidth - tracklistText.textField.textWidth) / 2;
+    tracklistText.x -= (FlxG.initialWidth * 0.35);
 
     var levelScore:Null<SaveScoreData> = Save.instance.getLevelScore(currentLevelId, currentDifficultyId);
     highScore = levelScore?.score ?? 0;

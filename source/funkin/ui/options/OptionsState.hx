@@ -60,9 +60,9 @@ class OptionsState extends MusicBeatState
     var menuBG = new FlxSprite().loadGraphic(Paths.image('menuBG'));
     var hsv = new HSVShader(-0.6, 0.9, 3.6);
     menuBG.shader = hsv;
-    menuBG.setGraphicSize(Std.int(FlxG.width * 1.1));
+    menuBG.setGraphicSize(Std.int(FlxG.width * 1.2));
     menuBG.updateHitbox();
-    menuBG.screenCenter();
+    menuBG.setPosition((FlxG.initialWidth - menuBG.width) / 2, (FlxG.initialHeight - menuBG.height) / 2);
     menuBG.scrollFactor.set(0, 0);
     add(menuBG);
 
@@ -240,7 +240,7 @@ class OptionsMenu extends Page<OptionsMenuPageName>
 
     // Follow the camera focus as we scroll.
     FlxG.camera.follow(camFocusPoint, null, 0.085);
-    FlxG.camera.deadzone.set(0, CAMERA_MARGIN / 2, FlxG.camera.width, FlxG.camera.height - CAMERA_MARGIN + 40);
+    FlxG.camera.deadzone.set(0, CAMERA_MARGIN / 2, FlxG.initialWidth, FlxG.initialHeight - CAMERA_MARGIN + 40);
     FlxG.camera.minScrollY = -CAMERA_MARGIN / 2;
 
     // Move the camera when the menu is scrolled.
@@ -293,7 +293,7 @@ class OptionsMenu extends Page<OptionsMenuPageName>
   {
     var item = items.createItem(0, 100 + items.length * 100, name, BOLD, callback);
     item.fireInstantly = fireInstantly;
-    item.screenCenter(X);
+    item.x = (FlxG.initialWidth - item.width) / 2;
     return item;
   }
 

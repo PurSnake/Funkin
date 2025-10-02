@@ -163,8 +163,7 @@ class NewCharacterCard extends BackingCard
     multiplyBar.blend = BlendMode.MULTIPLY;
     add(multiplyBar);
 
-    lightLayer = new FlxSprite((FreeplayState.CUTOUT_WIDTH * FreeplayState.DJ_POS_MULTI) + -360,
-      230).loadGraphic(Paths.image('freeplay/backingCards/newCharacter/orange gradient'));
+    lightLayer = new FlxSprite(-360, 230).loadGraphic(Paths.image('freeplay/backingCards/newCharacter/orange gradient'));
     lightLayer.blend = BlendMode.ADD;
     add(lightLayer);
 
@@ -177,8 +176,7 @@ class NewCharacterCard extends BackingCard
     multiply2.blend = BlendMode.MULTIPLY;
     add(multiply2);
 
-    lightLayer2 = new FlxSprite((FreeplayState.CUTOUT_WIDTH * FreeplayState.DJ_POS_MULTI) + -360,
-      230).loadGraphic(Paths.image('freeplay/backingCards/newCharacter/orange gradient'));
+    lightLayer2 = new FlxSprite(-360, 230).loadGraphic(Paths.image('freeplay/backingCards/newCharacter/orange gradient'));
     lightLayer2.blend = BlendMode.ADD;
     add(lightLayer2);
 
@@ -188,8 +186,7 @@ class NewCharacterCard extends BackingCard
     yellow.blend = BlendMode.MULTIPLY;
     add(yellow);
 
-    lightLayer3 = new FlxSprite((FreeplayState.CUTOUT_WIDTH * FreeplayState.DJ_POS_MULTI) + -360,
-      290).loadGraphic(Paths.image('freeplay/backingCards/newCharacter/red gradient'));
+    lightLayer3 = new FlxSprite(-360, 290).loadGraphic(Paths.image('freeplay/backingCards/newCharacter/red gradient'));
     lightLayer3.blend = BlendMode.ADD;
     add(lightLayer3);
 

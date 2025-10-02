@@ -123,9 +123,9 @@ class MainMenuState extends MusicBeatState
     bg.scrollFactor.y = 0.17;
     bg.setGraphicSize(Std.int(FlxG.width * 1.2));
     bg.updateHitbox();
-    bg.screenCenter();
+    bg.setPosition((FlxG.initialWidth - bg.width) / 2, (FlxG.initialHeight - bg.height) / 2);
     add(bg);
-
+    ratio.moveObj(bg, false, true);
     add(camFollow);
 
     magenta.scrollFactor.copyFrom(bg.scrollFactor);
@@ -233,6 +233,7 @@ class MainMenuState extends MusicBeatState
       // This one affects how much the menu items move when you scroll between them.
       menuItem.scrollFactor.y = 0.4;
 
+      ratio.moveObj(menuItem);
       if (index == 1) camFollow.setPosition(menuItem.getGraphicMidpoint().x, menuItem.getGraphicMidpoint().y);
     }
 
@@ -282,7 +283,7 @@ class MainMenuState extends MusicBeatState
     camFollow.y = bg.getGraphicMidpoint().y;
 
     // TODO: This is absolutely disgusting but what the hell sure, fix it later -Zack
-    addBackButton(FlxG.width - 230, FlxG.height - 200, FlxColor.WHITE, goBack, 1.0);
+    addBackButton(FlxG.initialWidth - 230, FlxG.height - 200, FlxColor.WHITE, goBack, 1.0);
 
     if (!ControlsHandler.usingExternalInputDevice)
     {
@@ -357,7 +358,7 @@ class MainMenuState extends MusicBeatState
 
   function createMenuButtion(name:String, atlas:String, callback:Void->Void):Void
   {
-    var item:FunkinButton = new FunkinButton(Math.round(FlxG.width * 0.8), Math.round(FlxG.height * 0.7));
+    var item:FunkinButton = new FunkinButton(Math.round(FlxG.initialWidth * 0.8), Math.round(FlxG.initialHeight * 0.7));
     item.makeGraphic(250, 250, FlxColor.BLUE);
     item.onDown.add(callback);
     buttonGrp.push(item);

@@ -31,7 +31,7 @@ import openfl.filters.ShaderFilter;
 @:access(openfl.display3D.textures.TextureBase)
 @:access(flixel.graphics.FlxGraphic)
 @:access(flixel.graphics.frames.FlxFrame)
-class FunkinCamera extends FlxCamera
+class FunkinCamera extends FlxFullScreenCamera
 {
   final grabbed:Array<BitmapData> = [];
   final texturePool:Array<TextureBase> = [];
