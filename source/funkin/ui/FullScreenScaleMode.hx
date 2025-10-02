@@ -14,7 +14,7 @@ import extension.androidtools.os.Build;
 #end
 
 /** TODO:
- * 1. Possibility to choose to change FlxG.width or FlxG.height.
+ * Possibility to choose to change FlxG.width or FlxG.height.
  */
 class FullScreenScaleMode extends BaseScaleMode
 {
@@ -26,86 +26,86 @@ class FullScreenScaleMode extends BaseScaleMode
   /**
    * The size of the screen cutout (e.g., for notches or camera cutouts).
    */
-  public static var cutoutSize:FlxPoint = new FlxPoint(0, 0);
+  public var cutoutSize:FlxPoint = new FlxPoint(0, 0);
 
   /**
    * The position of the notch on the screen.
    */
-  public static var notchPosition:FlxPoint = new FlxPoint(0, 0);
+  public var notchPosition:FlxPoint = new FlxPoint(0, 0);
 
   /**
    * The size of the notch on the screen.
    */
-  public static var notchSize:FlxPoint = new FlxPoint(0, 0);
+  public var notchSize:FlxPoint = new FlxPoint(0, 0);
 
   /**
    * The size of the game in screen resolution relativly to the initial size.
    * eg: If screen is 1080p and initial size of the game is 1280x720 then this is 1920x1080.
    */
-  public static var logicalSize:FlxPoint = new FlxPoint(0, 0);
+  public var logicalSize:FlxPoint = new FlxPoint(0, 0);
 
   /**
    * The maximum aspect ratio a screen can have.
    */
-  public static var maxAspectRatio:FlxPoint = new FlxPoint(21, 9);
+  public var maxAspectRatio:FlxPoint = new FlxPoint(21, 9);
 
   /**
    * The minimum aspect ratio a screen can have.
    */
-  public static var minAspectRatio:FlxPoint = new FlxPoint(4, 3);
+  public var minAspectRatio:FlxPoint = new FlxPoint(4, 3);
 
   /**
    * The maximum ratio axis indicating on which axis the black bar will be added.
    */
-  public static var maxRatioAxis:FlxAxes = X;
+  public var maxRatioAxis:FlxAxes = XY;
 
   /**
    * The aspect ratio of the game screen.
    */
-  public static var gameRatio:Float = -1;
+  public var gameRatio:Float = -1;
 
   /**
    * The size of the game cutout.
    */
-  public static var gameCutoutSize:FlxPoint = new FlxPoint(0, 0);
+  public var gameCutoutSize:FlxPoint = new FlxPoint(0, 0);
 
   /**
    * The position of the notch in game coordinates.
    */
-  public static var gameNotchPosition:FlxPoint = new FlxPoint(0, 0);
+  public var gameNotchPosition:FlxPoint = new FlxPoint(0, 0);
 
   /**
    * The size of the notch in game coordinates.
    */
-  public static var gameNotchSize:FlxPoint = new FlxPoint(0, 0);
+  public var gameNotchSize:FlxPoint = new FlxPoint(0, 0);
 
   /**
    * The aspect ratio of the window.
    */
-  public static var screenRatio:Float = -1;
+  public var screenRatio:Float = -1;
 
   /**
    * The scale factor for the window.
    */
-  public static var wideScale(default, null):FlxPoint = new FlxPoint(1, 1);
+  public var wideScale(default, null):FlxPoint = new FlxPoint(1, 1);
 
   /**
    * Axis used to determine the ratio.
    */
-  public static var ratioAxis(default, null):FlxAxes = X;
+  public var ratioAxis(default, null):FlxAxes = XY;
 
   /**
    * Whether fullscreen scaling is enabled.
    */
-  public static var enabled(default, set):Bool;
+  public var enabled(default, set):Bool;
 
   /**
    * Wether fake cutouts are added to the screen.
    */
-  public static var hasFakeCutouts(default, null):Bool = false;
+  public var hasFakeCutouts(default, null):Bool = false;
 
   @:noCompletion
-  static var cutoutBitmaps:Array<Bitmap> = [null, null];
+  var cutoutBitmaps:Array<Bitmap> = [null, null];
 
   public function new(enable:Bool = true):Void
   {
@@ -125,7 +125,7 @@ class FullScreenScaleMode extends BaseScaleMode
    * @param tweenDuration The duration of the tweens that adds the cutout bars. Using 0 will instantly put them on screen.
    * @param ease The function that's used for the tween.
    */
-  public static function addCutouts(tweenDuration:Float = 0.0, ?ease:Float->Float):Void
+  public function addCutouts(tweenDuration:Float = 0.0, ?ease:Float->Float):Void
   {
     if (cutoutSize.x == 0 && ratioAxis == X || cutoutSize.y == 0 && ratioAxis == Y)
     {
@@ -182,7 +182,7 @@ class FullScreenScaleMode extends BaseScaleMode
    * @param tweenDuration The duration of the tweens that remove the cutout bars. Using 0 will instantly put them off screen.
    * @param ease The function that's used for the tween.
    */
-  public static function removeCutouts(tweenDuration:Float = 0.0, ?ease:Float->Float):Void
+  public function removeCutouts(tweenDuration:Float = 0.0, ?ease:Float->Float):Void
   {
     for (i => bitmap in cutoutBitmaps)
     {
@@ -342,7 +342,7 @@ class FullScreenScaleMode extends BaseScaleMode
   }
 
   @:noCompletion
-  static function set_enabled(Value:Bool):Bool
+  function set_enabled(Value:Bool):Bool
   {
     #if android
     if (ratioAxis != FlxAxes.X || (Build.VERSION.SDK_INT < Build.VERSION_CODES.P && !Tools.isTablet()))
@@ -354,6 +354,11 @@ class FullScreenScaleMode extends BaseScaleMode
 
     if (instance != null && FlxG.scaleMode == instance)
     {
+      // instance.horizontalAlign = enabled ? LEFT : CENTER;
+      // instance.verticalAlign = enabled ? TOP : CENTER;
+      // instance.onMeasure(FlxG.stage.stageWidth, FlxG.stage.stageHeight);
+
+      // FlxG.signals.gameResized.dispatch(FlxG.stage.stageWidth, FlxG.stage.stageHeight);
       @:privateAccess
       FlxG.game.onResize(null);
     }

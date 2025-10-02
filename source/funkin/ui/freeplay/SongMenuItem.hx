@@ -648,7 +648,7 @@ class SongMenuItem extends FlxSpriteGroup
         capsule.scale.y *= realScaled;
 
         frameInTypeBeat += 1;
-        final shiftx:Float = FullScreenScaleMode.wideScale.x * 320;
+        final shiftx:Float = FullScreenScaleMode.instance.wideScale.x * 320;
         // Move the targetPos set to the if statement below if you want them to shift to their target positions after jumping in instead
         // I have no idea why this if instead of frameInTypeBeat == xFrames.length works even though they're the same thing
         if (targetPos.x <= shiftx) targetPos.x = intendedX(index - curSelected);

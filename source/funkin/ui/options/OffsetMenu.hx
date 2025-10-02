@@ -335,7 +335,6 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
     createButtonItem('Test', function() {
       // Reset testing state and start another one.
       // We do not reset the offset here, so the player can test their current offset.
-
       @:privateAccess
       if (OptionsState.instance.optionsCodex.currentPage != this) return;
 
@@ -409,8 +408,7 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
       {
       #end
         var height = testStrumline.strumlineNotes.members[0].height;
-        testStrumline.y = Preferences.downscroll ? FlxG.height - (height + 45) - Constants.STRUMLINE_Y_OFFSET : (height / 2)
-        - Constants.STRUMLINE_Y_OFFSET;
+        testStrumline.y = Preferences.downscroll ? FlxG.height - (height + 45) - Constants.STRUMLINE_Y_OFFSET : (height / 2) - Constants.STRUMLINE_Y_OFFSET;
         if (Preferences.downscroll) jumpInText.y = FlxG.height - 425;
         testStrumline.isDownscroll = Preferences.downscroll;
       #if mobile
@@ -442,8 +440,8 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
   }
 
   /**
-   * Callback executed when one of the note keys is pressed.
-   */
+     * Callback executed when one of the note keys is pressed.
+     */
   function onKeyPress(event:PreciseInputEvent):Void
   {
     // Do the minimal possible work here.
@@ -451,8 +449,8 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
   }
 
   /**
-   * Callback executed when one of the note keys is released.
-   */
+     * Callback executed when one of the note keys is released.
+     */
   function onKeyRelease(event:PreciseInputEvent):Void
   {
     // Do the minimal possible work here.
@@ -528,11 +526,11 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
   var _lastDirection:Int = 0;
 
   /* Adds a difference in milliseconds to the list.
-    If there are more than 4 differences, it calculates the average and sets the global offset.
-    This is used for calibrating the offset based on user input.
-    @param ms The difference in milliseconds to add.
-    @see Preferences.globalOffset
-   */
+      If there are more than 4 differences, it calculates the average and sets the global offset.
+      This is used for calibrating the offset based on user input.
+      @param ms The difference in milliseconds to add.
+      @see Preferences.globalOffset
+     */
   public function addDifference(ms:Float):Void
   {
     differences.push(ms);
@@ -855,9 +853,9 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
     }
 
     /*debugBeatText.x = receptor.x + receptor.width * 2;
-      debugBeatText.y = receptor.y - 20;
-
-          debugBeatText.text = 'Beat: ' + b; */
+        debugBeatText.y = receptor.y - 20;
+  
+            debugBeatText.text = 'Beat: ' + b; */
 
     // receptor.angle += angleVel * elapsed;
 
@@ -918,9 +916,9 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
   }
 
   /**
-   * PreciseInputEvents are put into a queue between update() calls,
-   * and then processed here.
-   */
+     * PreciseInputEvents are put into a queue between update() calls,
+     * and then processed here.
+     */
   function processInputQueue():Void
   {
     if (inputPressQueue.length + inputReleaseQueue.length == 0 || shouldOffset != 1) return;
@@ -977,7 +975,7 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
   // Creates a button item with a callback.
   function createButtonItem(name:String, callback:Void->Void):Void
   {
-    var item = items.createItem(funkin.ui.FullScreenScaleMode.gameNotchSize.x, (120 * items.length) + 30, name, BOLD, callback);
+    var item = items.createItem(funkin.ui.FullScreenScaleMode.instance.gameNotchSize.x, (120 * items.length) + 30, name, BOLD, callback);
     items.addItem(name, item);
   }
 
@@ -985,8 +983,8 @@ class OffsetMenu extends Page<OptionsState.OptionsMenuPageName>
   function createPrefItemNumber(prefName:String, prefDesc:String, onChange:Float->Void, ?valueFormatter:Float->String, defaultValue:Int, min:Int, max:Int,
       step:Float = 0.1, precision:Int, dragStepMultiplier:Float = 1):NumberPreferenceItem
   {
-    var item = new NumberPreferenceItem(funkin.ui.FullScreenScaleMode.gameNotchSize.x, (120 * items.length) + 30, prefName, defaultValue, min, max, step,
-      precision, onChange, valueFormatter, dragStepMultiplier);
+    var item = new NumberPreferenceItem(funkin.ui.FullScreenScaleMode.instance.gameNotchSize.x, (120 * items.length) + 30, prefName, defaultValue, min, max,
+      step, precision, onChange, valueFormatter, dragStepMultiplier);
     items.addItem(prefName, item);
     preferenceItems.add(item.lefthandText);
     return item;

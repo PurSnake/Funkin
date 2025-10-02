@@ -126,7 +126,7 @@ class ResultState extends MusicBeatSubState
     songName.angle = -4.4;
     songName.zIndex = 1000;
 
-    difficulty = new FlxSprite(555 + FullScreenScaleMode.gameNotchSize.x);
+    difficulty = new FlxSprite(555 + FullScreenScaleMode.instance.gameNotchSize.x);
     difficulty.zIndex = 1000;
 
     clearPercentSmall = new ClearPercentCounter(FlxG.width / 2 + 300, FlxG.height / 2 - 100, 100, true);
@@ -135,15 +135,15 @@ class ResultState extends MusicBeatSubState
 
     bgFlash = FlxGradient.createGradientFlxSprite(FlxG.width, FlxG.height, [0xFFFFF1A6, 0xFFFFF1BE], 90);
 
-    resultsAnim = FunkinSprite.createSparrow(FlxG.width - (1480 + (FullScreenScaleMode.gameCutoutSize.x / 2)), -10, "resultScreen/results");
+    resultsAnim = FunkinSprite.createSparrow(FlxG.width - (1480 + (FullScreenScaleMode.instance.gameCutoutSize.x / 2)), -10, "resultScreen/results");
 
-    ratingsPopin = FunkinSprite.createSparrow(-135 + FullScreenScaleMode.gameNotchSize.x, 135, "resultScreen/ratingsPopin");
+    ratingsPopin = FunkinSprite.createSparrow(-135 + FullScreenScaleMode.instance.gameNotchSize.x, 135, "resultScreen/ratingsPopin");
 
-    scorePopin = FunkinSprite.createSparrow(-180 + FullScreenScaleMode.gameNotchSize.x, 515, "resultScreen/scorePopin");
+    scorePopin = FunkinSprite.createSparrow(-180 + FullScreenScaleMode.instance.gameNotchSize.x, 515, "resultScreen/scorePopin");
 
-    highscoreNew = new FlxSprite(44 + FullScreenScaleMode.gameNotchSize.x, 557);
+    highscoreNew = new FlxSprite(44 + FullScreenScaleMode.instance.gameNotchSize.x, 557);
 
-    score = new ResultScore(35 + FullScreenScaleMode.gameNotchSize.x, 305, 10, params.scoreData.score);
+    score = new ResultScore(35 + FullScreenScaleMode.instance.gameNotchSize.x, 305, 10, params.scoreData.score);
 
     rankBg = new FunkinSprite(0, 0);
   }
@@ -182,7 +182,7 @@ class ResultState extends MusicBeatSubState
     add(bgFlash);
 
     // The sound system which falls into place behind the score text. Plays every time!
-    var soundSystem:FlxSprite = FunkinSprite.createSparrow(-15 + FullScreenScaleMode.gameNotchSize.x, -180, 'resultScreen/soundSystem');
+    var soundSystem:FlxSprite = FunkinSprite.createSparrow(-15 + FullScreenScaleMode.instance.gameNotchSize.x, -180, 'resultScreen/soundSystem');
     soundSystem.animation.addByPrefix("idle", "sound system", 24, false);
     soundSystem.visible = false;
     new FlxTimer().start(8 / 24, _ -> {
@@ -224,7 +224,7 @@ class ResultState extends MusicBeatSubState
           @:nullSafety(Off)
           var animation:FlxAtlasSprite = null;
 
-          var xPos = offsets[0] + (FullScreenScaleMode.gameCutoutSize.x / 2);
+          var xPos = offsets[0] + (FullScreenScaleMode.instance.gameCutoutSize.x / 2);
           var yPos = offsets[1];
 
           if (animData.scriptClass != null) animation = ScriptedFlxAtlasSprite.init(animData.scriptClass, xPos, yPos);
@@ -284,9 +284,9 @@ class ResultState extends MusicBeatSubState
           var animation:FunkinSprite = null;
 
           if (animData.scriptClass != null) animation = ScriptedFunkinSprite.init(animData.scriptClass,
-            offsets[0] + (FullScreenScaleMode.gameCutoutSize.x / 2), offsets[1]);
+            offsets[0] + (FullScreenScaleMode.instance.gameCutoutSize.x / 2), offsets[1]);
           else
-            animation = FunkinSprite.createSparrow(offsets[0] + (FullScreenScaleMode.gameCutoutSize.x / 2), offsets[1], animPath);
+            animation = FunkinSprite.createSparrow(offsets[0] + (FullScreenScaleMode.instance.gameCutoutSize.x / 2), offsets[1], animPath);
 
           if (animation == null) continue;
 
@@ -415,10 +415,10 @@ class ResultState extends MusicBeatSubState
      * NOTE: We display how many notes were HIT, not how many notes there were in total.
      *
      */
-    var totalHit:TallyCounter = new TallyCounter(375 + FullScreenScaleMode.gameNotchSize.x, hStuf * 3, params.scoreData.tallies.totalNotesHit);
+    var totalHit:TallyCounter = new TallyCounter(375 + FullScreenScaleMode.instance.gameNotchSize.x, hStuf * 3, params.scoreData.tallies.totalNotesHit);
     ratingGrp.add(totalHit);
 
-    var maxCombo:TallyCounter = new TallyCounter(375 + FullScreenScaleMode.gameNotchSize.x, hStuf * 4, params.scoreData.tallies.maxCombo);
+    var maxCombo:TallyCounter = new TallyCounter(375 + FullScreenScaleMode.instance.gameNotchSize.x, hStuf * 4, params.scoreData.tallies.maxCombo);
     ratingGrp.add(maxCombo);
 
     if (params.scoreData.tallies.totalNotesHit >= 1000)
@@ -432,24 +432,24 @@ class ResultState extends MusicBeatSubState
 
     hStuf += 2;
 
-    var tallySick:TallyCounter = new TallyCounter(230 + FullScreenScaleMode.gameNotchSize.x, (hStuf * 5) + extraYOffset, params.scoreData.tallies.sick,
-      0xFF89E59E);
+    var tallySick:TallyCounter = new TallyCounter(230 + FullScreenScaleMode.instance.gameNotchSize.x, (hStuf * 5) + extraYOffset,
+      params.scoreData.tallies.sick, 0xFF89E59E);
     ratingGrp.add(tallySick);
 
-    var tallyGood:TallyCounter = new TallyCounter(210 + FullScreenScaleMode.gameNotchSize.x, (hStuf * 6) + extraYOffset, params.scoreData.tallies.good,
-      0xFF89C9E5);
+    var tallyGood:TallyCounter = new TallyCounter(210 + FullScreenScaleMode.instance.gameNotchSize.x, (hStuf * 6) + extraYOffset,
+      params.scoreData.tallies.good, 0xFF89C9E5);
     ratingGrp.add(tallyGood);
 
-    var tallyBad:TallyCounter = new TallyCounter(190 + FullScreenScaleMode.gameNotchSize.x, (hStuf * 7) + extraYOffset, params.scoreData.tallies.bad,
+    var tallyBad:TallyCounter = new TallyCounter(190 + FullScreenScaleMode.instance.gameNotchSize.x, (hStuf * 7) + extraYOffset, params.scoreData.tallies.bad,
       0xFFE6CF8A);
     ratingGrp.add(tallyBad);
 
-    var tallyShit:TallyCounter = new TallyCounter(220 + FullScreenScaleMode.gameNotchSize.x, (hStuf * 8) + extraYOffset, params.scoreData.tallies.shit,
-      0xFFE68C8A);
+    var tallyShit:TallyCounter = new TallyCounter(220 + FullScreenScaleMode.instance.gameNotchSize.x, (hStuf * 8) + extraYOffset,
+      params.scoreData.tallies.shit, 0xFFE68C8A);
     ratingGrp.add(tallyShit);
 
-    var tallyMissed:TallyCounter = new TallyCounter(260 + FullScreenScaleMode.gameNotchSize.x, (hStuf * 9) + extraYOffset, params.scoreData.tallies.missed,
-      0xFFC68AE6);
+    var tallyMissed:TallyCounter = new TallyCounter(260 + FullScreenScaleMode.instance.gameNotchSize.x, (hStuf * 9) + extraYOffset,
+      params.scoreData.tallies.missed, 0xFFC68AE6);
     ratingGrp.add(tallyMissed);
 
     score.visible = false;
@@ -535,7 +535,7 @@ class ResultState extends MusicBeatSubState
 
     trace('Clear percent target: ' + clearPercentFloat + ', round: ' + clearPercentTarget);
 
-    var clearPercentCounter:ClearPercentCounter = new ClearPercentCounter((FlxG.width / 2 + 190) + (FullScreenScaleMode.gameCutoutSize.x / 2),
+    var clearPercentCounter:ClearPercentCounter = new ClearPercentCounter((FlxG.width / 2 + 190) + (FullScreenScaleMode.instance.gameCutoutSize.x / 2),
       FlxG.height / 2 - 70, clearPercentLerp);
     FlxTween.tween(clearPercentCounter, {curNumber: clearPercentTarget}, 58 / 24,
       {
@@ -685,7 +685,7 @@ class ResultState extends MusicBeatSubState
   {
     movingSongStuff = false;
 
-    difficulty.x = 555 + FullScreenScaleMode.gameNotchSize.x;
+    difficulty.x = 555 + FullScreenScaleMode.instance.gameNotchSize.x;
 
     var diffYTween:Float = 122;
 

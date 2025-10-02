@@ -113,7 +113,7 @@ class FreeplayState extends MusicBeatSubState
   /**
    * For scaling some sprites on wide displays.
    */
-  public static var CUTOUT_WIDTH:Float = FullScreenScaleMode.gameCutoutSize.x / 1.5;
+  public static var CUTOUT_WIDTH:Float = 0; // FullScreenScaleMode.instance.gameCutoutSize.x / 1.5;
 
   /**
    * For positioning the DJ on wide displays.
@@ -555,7 +555,7 @@ class FreeplayState extends MusicBeatSubState
     freeplayTxtBg.screenCenter(X);
     freeplayTxtBg.visible = false;
 
-    freeplayArrow = new FlxText(Math.max(FullScreenScaleMode.gameNotchSize.x, 8), 8, 0, '<---', 48);
+    freeplayArrow = new FlxText(Math.max(FullScreenScaleMode.instance.gameNotchSize.x, 8), 8, 0, '<---', 48);
     freeplayArrow.font = 'VCR OSD Mono';
     freeplayArrow.visible = false;
 
@@ -617,7 +617,7 @@ class FreeplayState extends MusicBeatSubState
     freeplayArrow.shader = sillyStroke;
     ostName.shader = sillyStroke;
 
-    var fnfHighscoreSpr:FlxSprite = new FlxSprite(FlxG.width - (FullScreenScaleMode.gameNotchSize.x + 420), 70);
+    var fnfHighscoreSpr:FlxSprite = new FlxSprite(FlxG.width - (FullScreenScaleMode.instance.gameNotchSize.x + 420), 70);
     fnfHighscoreSpr.frames = Paths.getSparrowAtlas('freeplay/highscore');
     fnfHighscoreSpr.animation.addByPrefix('highscore', 'highscore small instance 1', 24, false);
     fnfHighscoreSpr.visible = false;
@@ -760,11 +760,11 @@ class FreeplayState extends MusicBeatSubState
       {
         if (diff == null) continue;
         FlxTween.cancelTweensOf(diff);
-        FlxTween.tween(diff, {x: 90 - (FullScreenScaleMode.cutoutSize.x / 2)}, 0.6, {ease: FlxEase.quartOut});
+        FlxTween.tween(diff, {x: 90 - (FullScreenScaleMode.instance.cutoutSize.x / 2)}, 0.6, {ease: FlxEase.quartOut});
         diff.y = 80;
         diff.visible = diff == currentDifficultySprite;
       }
-      FlxTween.tween(grpDifficulties, {x: 90 - (FullScreenScaleMode.cutoutSize.x / 2)}, 0.6, {ease: FlxEase.quartOut});
+      FlxTween.tween(grpDifficulties, {x: 90 - (FullScreenScaleMode.instance.cutoutSize.x / 2)}, 0.6, {ease: FlxEase.quartOut});
 
       diffSelLeft.visible = true;
       diffSelRight.visible = true;
@@ -834,7 +834,7 @@ class FreeplayState extends MusicBeatSubState
     funnyCam.bgColor = FlxColor.TRANSPARENT;
     FlxG.cameras.add(funnyCam, false);
 
-    rankVignette.scale.set(2 * FullScreenScaleMode.wideScale.x, 2 * FullScreenScaleMode.wideScale.y);
+    rankVignette.scale.set(2 * FullScreenScaleMode.instance.wideScale.x, 2 * FullScreenScaleMode.instance.wideScale.y);
     rankVignette.updateHitbox();
     rankVignette.blend = BlendMode.ADD;
     // rankVignette.cameras = [rankCamera];
@@ -1426,7 +1426,7 @@ class FreeplayState extends MusicBeatSubState
       }
 
       difficultyDots.group.members[i].visible = true;
-      difficultyDots.group.members[i].x = ((difficultyDots.x + (distance * curDot)) - shiftAmt) - (FullScreenScaleMode.cutoutSize.x / 2);
+      difficultyDots.group.members[i].x = ((difficultyDots.x + (distance * curDot)) - shiftAmt) - (FullScreenScaleMode.instance.cutoutSize.x / 2);
       difficultyDots.group.members[i].y = DEFAULT_DOTS_GROUP_POS[1] + distance * curRow;
 
       curDot++;
@@ -2301,7 +2301,7 @@ class FreeplayState extends MusicBeatSubState
       final newX:Int = (change > 0) ? -320 : 500;
 
       controls.active = false;
-      FlxTween.tween(diff, {x: newX - (FullScreenScaleMode.cutoutSize.x / 2)}, 0.2,
+      FlxTween.tween(diff, {x: newX - (FullScreenScaleMode.instance.cutoutSize.x / 2)}, 0.2,
         {
           ease: FlxEase.circInOut,
           onComplete: function(_) {
@@ -2401,8 +2401,8 @@ class FreeplayState extends MusicBeatSubState
 
       if (!isCurrentDiff || change == 0) continue;
 
-      diffSprite.x = ((change > 0) ? 500 : -320) - (FullScreenScaleMode.cutoutSize.x / 2);
-      FlxTween.tween(diffSprite, {x: 90 - (FullScreenScaleMode.cutoutSize.x / 2)}, 0.2,
+      diffSprite.x = ((change > 0) ? 500 : -320) - (FullScreenScaleMode.instance.cutoutSize.x / 2);
+      FlxTween.tween(diffSprite, {x: 90 - (FullScreenScaleMode.instance.cutoutSize.x / 2)}, 0.2,
         {
           ease: FlxEase.circInOut,
           onComplete: function(_) {
@@ -3020,7 +3020,7 @@ class FreeplayState extends MusicBeatSubState
   public static function build(?params:FreeplayStateParams, ?stickers:StickerSubState):MusicBeatState
   {
     // Since CUTOUT_WIDTH is static it might retain some old inccrect values so we update it before loading freeplay
-    CUTOUT_WIDTH = FullScreenScaleMode.gameCutoutSize.x / 1.5;
+    CUTOUT_WIDTH = FullScreenScaleMode.instance.gameCutoutSize.x / 1.5;
     var result:MainMenuState;
     result = new MainMenuState(true);
     result.openSubState(new FreeplayState(params, stickers));

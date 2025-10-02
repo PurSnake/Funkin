@@ -360,7 +360,7 @@ class PauseSubState extends MusicBeatSubState
   {
     // Using state.bgColor causes bugs!
     background = new FunkinSprite();
-    background.makeSolidColor(FlxG.width, FlxG.height, FlxColor.BLACK);
+    background.makeSolidColor(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
     background.alpha = 0.0;
     background.scrollFactor.set(0, 0);
     background.updateHitbox();
@@ -394,7 +394,7 @@ class PauseSubState extends MusicBeatSubState
 
   override function onResize(width, height)
   {
-    background.scale.set(FlxG.width / 2, FlxG.height / 2);
+    background.scale.set(FlxG.width, FlxG.height);
     background.setPosition((FlxG.initialWidth - background.width) / 2, (FlxG.initialHeight - background.height) / 2);
   }
 
@@ -737,7 +737,7 @@ class PauseSubState extends MusicBeatSubState
         FlxTween.tween(text, {x: 150}, 0.2, {ease: FlxEase.backInOut});
       }
       #else
-      var targetX = FlxMath.remapToRange((entryIndex - currentEntry), 0, 1, 0, 1.3) * 20 + 90 - (FullScreenScaleMode.cutoutSize.x / 2);
+      var targetX = FlxMath.remapToRange((entryIndex - currentEntry), 0, 1, 0, 1.3) * 20 + 90 - (FullScreenScaleMode.instance.gameCutoutSize.x / 2);
       var targetY = FlxMath.remapToRange((entryIndex - currentEntry), 0, 1, 0, 1.3) * 120 + (FlxG.height * 0.48);
       FlxTween.globalManager.cancelTweensOf(text);
       FlxTween.tween(text, {x: targetX, y: targetY}, 0.33, {ease: FlxEase.quartOut});

@@ -360,7 +360,7 @@ class FunkinHitbox extends FlxTypedSpriteGroup<FunkinHint>
             final x:Float = ((i == 1) ? FlxG.width - (hintSize * 4) : hintSize * 2) + Math.cos(hintsAngles[j]) * hintsZoneRadius;
             final y:Float = (FlxG.height - (hintSize * 3.75)) + Math.sin(hintsAngles[j]) * hintsZoneRadius;
 
-            add(createHintCircle(i == 0 ? x + FullScreenScaleMode.gameNotchSize.x : x - FullScreenScaleMode.gameNotchSize.x, y,
+            add(createHintCircle(i == 0 ? x + FullScreenScaleMode.instance.gameNotchSize.x : x - FullScreenScaleMode.instance.gameNotchSize.x, y,
               hintsNoteDirections[j % hintsNoteDirections.length], hintSize, outlineThickness, hintsColors[j % hintsColors.length]));
           }
         }

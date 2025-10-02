@@ -38,7 +38,7 @@ class DebugMenuSubState extends MusicBeatSubState
     // Create the green background.
     var menuBG = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
     menuBG.color = 0xFF4CAF50;
-    menuBG.setGraphicSize(Std.int(menuBG.width * 1.1 * FullScreenScaleMode.wideScale.x));
+    menuBG.setGraphicSize(Std.int(menuBG.width * 1.1 * FullScreenScaleMode.instance.wideScale.x));
     menuBG.updateHitbox();
     menuBG.screenCenter();
     menuBG.scrollFactor.set(0, 0);

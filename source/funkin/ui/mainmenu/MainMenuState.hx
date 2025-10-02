@@ -165,7 +165,7 @@ class MainMenuState extends MusicBeatState
       FlxTransitionableState.skipNextTransOut = true;
 
       // Since CUTOUT_WIDTH is static it might retain some old inccrect values so we update it before loading freeplay
-      FreeplayState.CUTOUT_WIDTH = funkin.ui.FullScreenScaleMode.gameCutoutSize.x / 1.5;
+      FreeplayState.CUTOUT_WIDTH = funkin.ui.FullScreenScaleMode.instance.gameCutoutSize.x / 1.5;
 
       #if FEATURE_DEBUG_FUNCTIONS
       // Debug function: Hold SHIFT when selecting Freeplay to swap character without the char select menu

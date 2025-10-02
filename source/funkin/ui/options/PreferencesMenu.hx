@@ -248,7 +248,7 @@ class PreferencesMenu extends Page<OptionsState.OptionsMenuPageName>
         thyOffset += 120;
       }
 
-      daItem.x = thyOffset + funkin.ui.FullScreenScaleMode.gameNotchSize.x;
+      daItem.x = thyOffset + funkin.ui.FullScreenScaleMode.instance.gameNotchSize.x;
     });
   }
 
@@ -262,7 +262,7 @@ class PreferencesMenu extends Page<OptionsState.OptionsMenuPageName>
    */
   function createPrefItemCheckbox(prefName:String, prefDesc:String, onChange:Bool->Void, defaultValue:Bool, available:Bool = true):Void
   {
-    var checkbox:CheckboxPreferenceItem = new CheckboxPreferenceItem(funkin.ui.FullScreenScaleMode.gameNotchSize.x, 120 * (items.length - 1 + 1),
+    var checkbox:CheckboxPreferenceItem = new CheckboxPreferenceItem(funkin.ui.FullScreenScaleMode.instance.gameNotchSize.x, 120 * (items.length - 1 + 1),
       defaultValue, available);
 
     items.createItem(0, (120 * items.length) + 30, prefName, AtlasFont.BOLD, function() {
@@ -288,8 +288,8 @@ class PreferencesMenu extends Page<OptionsState.OptionsMenuPageName>
   function createPrefItemNumber(prefName:String, prefDesc:String, onChange:Float->Void, ?valueFormatter:Float->String, defaultValue:Float, min:Float,
       max:Float, step:Float = 0.1, precision:Int):Void
   {
-    var item = new NumberPreferenceItem(funkin.ui.FullScreenScaleMode.gameNotchSize.x, (120 * items.length) + 30, prefName, defaultValue, min, max, step,
-      precision, onChange, valueFormatter);
+    var item = new NumberPreferenceItem(funkin.ui.FullScreenScaleMode.instance.gameNotchSize.x, (120 * items.length) + 30, prefName, defaultValue, min, max,
+      step, precision, onChange, valueFormatter);
     items.addItem(prefName, item);
     preferenceItems.add(item.lefthandText);
     preferenceDesc.push(prefDesc);
@@ -310,8 +310,8 @@ class PreferencesMenu extends Page<OptionsState.OptionsMenuPageName>
     var formatter = function(value:Float) {
       return '${value}%';
     };
-    var item = new NumberPreferenceItem(funkin.ui.FullScreenScaleMode.gameNotchSize.x, (120 * items.length) + 30, prefName, defaultValue, min, max, 10, 0,
-      newCallback, formatter);
+    var item = new NumberPreferenceItem(funkin.ui.FullScreenScaleMode.instance.gameNotchSize.x, (120 * items.length) + 30, prefName, defaultValue, min, max,
+      10, 0, newCallback, formatter);
     items.addItem(prefName, item);
     preferenceItems.add(item.lefthandText);
     preferenceDesc.push(prefDesc);
@@ -325,7 +325,8 @@ class PreferencesMenu extends Page<OptionsState.OptionsMenuPageName>
    */
   function createPrefItemEnum<T>(prefName:String, prefDesc:String, values:Map<String, T>, onChange:String->T->Void, defaultKey:String):Void
   {
-    var item = new EnumPreferenceItem<T>(funkin.ui.FullScreenScaleMode.gameNotchSize.x, (120 * items.length) + 30, prefName, values, defaultKey, onChange);
+    var item = new EnumPreferenceItem<T>(funkin.ui.FullScreenScaleMode.instance.gameNotchSize.x, (120 * items.length) + 30, prefName, values, defaultKey,
+      onChange);
     items.addItem(prefName, item);
     preferenceItems.add(item.lefthandText);
     preferenceDesc.push(prefDesc);

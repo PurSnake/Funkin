@@ -153,7 +153,7 @@ class ControlsMenu extends Page<OptionsState.OptionsMenuPageName>
       if (currentHeader != null && name.indexOf(currentHeader) == 0) name = name.substr(currentHeader.length);
 
       var formatName = name.replace('_', ' ');
-      var label = labels.add(new AtlasText(Math.max(FullScreenScaleMode.gameNotchSize.x, CONTROL_BASE_X), y, formatName, AtlasFont.BOLD));
+      var label = labels.add(new AtlasText(Math.max(FullScreenScaleMode.instance.gameNotchSize.x, CONTROL_BASE_X), y, formatName, AtlasFont.BOLD));
       label.alpha = 0.6;
       for (i in 0...COLUMNS)
         createItem(label.x + CONTROL_MARGIN_X + i * CONTROL_SPACING_X, y, control, i);

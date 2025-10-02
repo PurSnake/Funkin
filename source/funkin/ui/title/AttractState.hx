@@ -67,7 +67,7 @@ class AttractState extends MusicBeatState
     #end
 
     pie = new FlxPieDial(0, 0, 40, FlxColor.WHITE, 45, CIRCLE, true, 20);
-    pie.x = FlxG.width - ((pie.width * 1.5) + FullScreenScaleMode.gameNotchSize.x);
+    pie.x = FlxG.width - ((pie.width * 1.5) + FullScreenScaleMode.instance.gameNotchSize.x);
     pie.y = FlxG.height - (pie.height * 1.5);
     pie.amount = 0;
     pie.replaceColor(FlxColor.BLACK, 0x8AC5C4C4);
