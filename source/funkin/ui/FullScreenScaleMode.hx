@@ -47,7 +47,7 @@ class FullScreenScaleMode extends BaseScaleMode
   /**
    * The maximum aspect ratio a screen can have.
    */
-  public var maxAspectRatio:FlxPoint = new FlxPoint(21, 9);
+  public var maxAspectRatio:FlxPoint = new FlxPoint(20, 9);
 
   /**
    * The minimum aspect ratio a screen can have.
@@ -104,6 +104,10 @@ class FullScreenScaleMode extends BaseScaleMode
    */
   public var hasFakeCutouts(default, null):Bool = false;
 
+  public var debug:Bool = true; // temporarily enabled for debugging (can set false later)
+
+  var resizeListener:Dynamic = null;
+
   @:noCompletion
   var cutoutBitmaps:Array<Bitmap> = [null, null];
 
@@ -112,11 +116,19 @@ class FullScreenScaleMode extends BaseScaleMode
     super();
 
     enabled = enable;
-
-    // // Required so we can check on which axies is the game wide.
-    // updateSizes();
-
     instance = this;
+
+    #if !no_flixel_signals
+    try
+    {
+      resizeListener = function(w:Int, h:Int):Void {
+        onMeasure(w, h);
+        if (hasFakeCutouts) addCutouts(0);
+      };
+      FlxG.signals.gameResized.add(resizeListener);
+    }
+    catch (e:Dynamic) {}
+    #end
   }
 
   /**
@@ -135,43 +147,79 @@ class FullScreenScaleMode extends BaseScaleMode
     final game = FlxG.game;
     for (i => bitmap in cutoutBitmaps)
     {
-      if (bitmap == null)
-      {
-        cutoutBitmaps[i] = bitmap = new Bitmap(new BitmapData(ratioAxis == X ? Math.ceil(cutoutSize.x / 2) : Math.ceil(FlxG.scaleMode.gameSize.x),
-          ratioAxis == Y ? Math.ceil(cutoutSize.y / 2) : Math.ceil(FlxG.scaleMode.gameSize.y), true, 0xFF000000));
-        game.parent.addChildAt(bitmap, game.parent.getChildIndex(game) + 1);
-      }
-
-      var targetX:Float = 0;
-      var targetY:Float = 0;
+      var leftBarWidth:Int = 0;
+      var rightBarWidth:Int = 0;
+      var topBarHeight:Int = 0;
+      var bottomBarHeight:Int = 0;
 
       if (ratioAxis == X)
       {
-        bitmap.x = (i == 0) ? -bitmap.width : FlxG.scaleMode.gameSize.x;
-        targetX = (i == 0) ? 0 : FlxG.scaleMode.gameSize.x - bitmap.width;
+        leftBarWidth = Std.int(Math.max(0, Math.ceil(offset.x)));
+        rightBarWidth = Std.int(Math.max(0, Math.ceil(deviceSize.x - (offset.x + gameSize.x))));
+
+        var bmpW = (i == 0) ? leftBarWidth : rightBarWidth;
+        var bmpH = Std.int(Math.max(1, Math.ceil(deviceSize.y)));
+
+        if (bitmap == null || bitmap.bitmapData.width != bmpW || bitmap.bitmapData.height != bmpH)
+        {
+          if (bitmap != null && bitmap.parent != null) bitmap.parent.removeChild(bitmap);
+          cutoutBitmaps[i] = bitmap = new Bitmap(new BitmapData(Std.int(Math.max(1, bmpW)), bmpH, true, 0xFF000000));
+          game.parent.addChildAt(bitmap, game.parent.getChildIndex(game) + 1);
+        }
+        if (i == 0)
+        {
+          bitmap.x = 0;
+        }
+        else
+        {
+          bitmap.x = Std.int(Math.round(offset.x + gameSize.x));
+        }
         bitmap.y = 0;
-        targetY = 0;
+
+        if (bmpW <= 0)
+        {
+          bitmap.alpha = 0;
+          continue;
+        }
       }
       else
       {
+        topBarHeight = Std.int(Math.max(0, Math.ceil(offset.y)));
+        bottomBarHeight = Std.int(Math.max(0, Math.ceil(deviceSize.y - (offset.y + gameSize.y))));
+
+        var bmpW2 = Std.int(Math.max(1, Math.ceil(deviceSize.x)));
+        var bmpH2 = (i == 0) ? topBarHeight : bottomBarHeight;
+
+        if (bitmap == null || bitmap.bitmapData.width != bmpW2 || bitmap.bitmapData.height != bmpH2)
+        {
+          if (bitmap != null && bitmap.parent != null) bitmap.parent.removeChild(bitmap);
+          cutoutBitmaps[i] = bitmap = new Bitmap(new BitmapData(bmpW2, Std.int(Math.max(1, bmpH2)), true, 0xFF000000));
+          game.parent.addChildAt(bitmap, game.parent.getChildIndex(game) + 1);
+        }
+
         bitmap.x = 0;
-        targetX = 0;
-        bitmap.y = (i == 0) ? -bitmap.height : FlxG.scaleMode.gameSize.y;
-        targetY = (i == 0) ? 0 : FlxG.scaleMode.gameSize.y - bitmap.height;
+        if (i == 0)
+        {
+          bitmap.y = 0;
+        }
+        else
+        {
+          bitmap.y = Std.int(Math.round(offset.y + gameSize.y));
+        }
+
+        if (bmpH2 <= 0)
+        {
+          bitmap.alpha = 0;
+          continue;
+        }
       }
 
-      bitmap.alpha = 0;
+      // Debug: log computed bar sizes/positions and bitmap actual size
+      if (debug) trace('[addCutouts] i:' + i + ' bmp (w,h):' + bitmap.bitmapData.width + ',' + bitmap.bitmapData.height + ' pos:' + bitmap.x + ','
+        + bitmap.y + ' leftBar:' + leftBarWidth + ' rightBar:' + rightBarWidth + ' topBar:' + topBarHeight + ' bottomBar:' + bottomBarHeight + ' deviceSize:'
+        + deviceSize.x + ',' + deviceSize.y + ' gameSize:' + gameSize.x + ',' + gameSize.y + ' offset:' + offset.x + ',' + offset.y);
 
-      // if (tweenDuration > 0.0)
-      // {
-      // 	FlxTween.tween(bitmap, {x: targetX, y: targetY, alpha: 1}, tweenDuration, {ease: ease ?? FlxEase.linear});
-      // }
-      // else
-      {
-        bitmap.x = targetX;
-        bitmap.y = targetY;
-        bitmap.alpha = 1;
-      }
+      bitmap.alpha = 1;
     }
     hasFakeCutouts = true;
   }
@@ -195,16 +243,9 @@ class FullScreenScaleMode extends BaseScaleMode
       final targetX:Float = (i == 0 || ratioAxis == Y) ? ratioAxis == Y ? 0 : -bitmap.width : FlxG.scaleMode.gameSize.x;
       final targetY:Float = (i == 0 || ratioAxis == X) ? ratioAxis == X ? 0 : -bitmap.height : FlxG.scaleMode.gameSize.y;
 
-      // if (tweenDuration > 0.0)
-      // {
-      // 	FlxTween.tween(bitmap, {x: targetX, y: targetY, alpha: 0}, tweenDuration, {ease: ease ?? FlxEase.linear});
-      // }
-      // else
-      {
-        bitmap.x = targetX;
-        bitmap.y = targetY;
-        bitmap.alpha = 0;
-      }
+      bitmap.x = targetX;
+      bitmap.y = targetY;
+      bitmap.alpha = 0;
     }
     hasFakeCutouts = false;
   }
@@ -226,12 +267,18 @@ class FullScreenScaleMode extends BaseScaleMode
     updateGamePosition();
 
     adjustGameSize();
+
+    if (debug) trace('[onMeasure] Width:' + Width + ' Height:' + Height + ' gameSize:' + gameSize.x + 'x' + gameSize.y + ' logicalSize:' + logicalSize.x
+      + 'x' + logicalSize.y + ' scale:' + scale.x + ',' + scale.y + ' offset:' + offset.x + ',' + offset.y);
   }
 
   override public function updateScaleOffset():Void
   {
-    scale.x = (ratioAxis == X ? logicalSize.x : deviceSize.x) / FlxG.initialWidth;
-    scale.y = (ratioAxis == Y ? logicalSize.y : deviceSize.y) / FlxG.initialHeight;
+    var baseW = Math.max(1, FlxG.initialWidth);
+    var baseH = Math.max(1, FlxG.initialHeight);
+
+    scale.x = (ratioAxis == X ? logicalSize.x : deviceSize.x) / baseW;
+    scale.y = (ratioAxis == Y ? logicalSize.y : deviceSize.y) / baseH;
     updateOffsetX();
     updateOffsetY();
   }
@@ -253,6 +300,7 @@ class FullScreenScaleMode extends BaseScaleMode
         Height = Math.ceil(Width / gameRatio);
       }
     }
+
     gameSize.set(Width, Height);
     logicalSize.set(Math.ceil(gameSize.y * gameRatio), Math.ceil(gameSize.x / gameRatio));
   }
@@ -261,11 +309,10 @@ class FullScreenScaleMode extends BaseScaleMode
   {
     if (enabled)
     {
-      var gameWidth:Float = gameSize.x / scale.x;
-      var gameHeight:Float = gameSize.y / scale.y;
+      var gameWidth:Float = gameSize.x / Math.max(0.0001, scale.x);
+      var gameHeight:Float = gameSize.y / Math.max(0.0001, scale.y);
       var minAspectRatioFactor:Float = minAspectRatio.x / minAspectRatio.y;
       var maxAspectRatioFactor:Float = maxAspectRatio.x / maxAspectRatio.y;
-      // trace(gameWidth, gameHeight, maxAspectRatioFactor);
       if (ratioAxis == X)
       {
         var maxFactor = Math.max(minAspectRatioFactor, maxAspectRatioFactor);
@@ -276,18 +323,20 @@ class FullScreenScaleMode extends BaseScaleMode
           gameSize.x = gameWidth * scale.x;
 
           final sizeDifference:Float = oldGameWidth - gameSize.x;
-          final scale:Float = logicalSize.x / FlxG.initialWidth;
-          cutoutSize.set(cutoutSize.x - sizeDifference, 0);
+          final sc:Float = logicalSize.x / Math.max(1, FlxG.initialWidth);
+          cutoutSize.set(Math.max(0, cutoutSize.x - sizeDifference), 0);
           gameCutoutSize.copyFrom(cutoutSize);
-          gameCutoutSize.x /= scale;
+          if (sc > 0) gameCutoutSize.x /= sc;
 
           notchSize.x = Math.max(0, notchSize.x - sizeDifference);
-          gameNotchSize.x = notchSize.x / scale;
+          final nsx = Math.max(1, sc);
+          gameNotchSize.x = notchSize.x / nsx;
 
-          offset.x = Math.ceil((deviceSize.x - gameSize.x) * 0.5);
+          offset.x = Math.max(0, Math.ceil((deviceSize.x - gameSize.x) * 0.5));
+          if (gameSize.x > deviceSize.x) gameSize.x = deviceSize.x;
         }
 
-        untyped FlxG.width = Math.ceil(gameWidth);
+        untyped FlxG.width = Math.max(1, Math.ceil(gameWidth));
       }
       else
       {
@@ -297,26 +346,30 @@ class FullScreenScaleMode extends BaseScaleMode
         if (gameHeight / FlxG.initialWidth > maxFactor && maxRatioAxis.y)
         {
           final oldGameHeight = gameSize.y;
-          gameHeight = gameWidth * maxFactor; // todo?
-          // gameHeight = FlxG.initialHeight;
+          gameHeight = gameWidth * maxFactor;
           gameSize.y = gameHeight * scale.y;
 
           final sizeDifference:Float = oldGameHeight - gameSize.y;
-          final scale:Float = logicalSize.y / FlxG.initialHeight;
-          cutoutSize.set(0, cutoutSize.y - sizeDifference);
+          final sc:Float = logicalSize.y / Math.max(1, FlxG.initialHeight);
+          cutoutSize.set(0, Math.max(0, cutoutSize.y - sizeDifference));
           gameCutoutSize.copyFrom(cutoutSize);
-          gameCutoutSize.y /= scale;
+          if (sc > 0) gameCutoutSize.y /= sc;
 
           notchSize.y = Math.max(0, notchSize.y - sizeDifference);
-          gameNotchSize.y = notchSize.y / scale;
+          final nsy = Math.max(1, sc);
+          gameNotchSize.y = notchSize.y / nsy;
 
-          offset.y = Math.ceil((deviceSize.y - gameSize.y) * 0.5);
+          offset.y = Math.max(0, Math.ceil((deviceSize.y - gameSize.y) * 0.5));
+          if (gameSize.y > deviceSize.y) gameSize.y = deviceSize.y;
         }
 
-        untyped FlxG.height = Math.ceil(gameHeight);
+        untyped FlxG.height = Math.max(1, Math.ceil(gameHeight));
       }
-      wideScale.set(FlxG.width / FlxG.initialWidth, FlxG.height / FlxG.initialHeight);
+      wideScale.set(FlxG.width / Math.max(1, FlxG.initialWidth), FlxG.height / Math.max(1, FlxG.initialHeight));
       updateGamePosition();
+
+      if (debug) trace('[adjustGameSize] gameSize:' + gameSize.x + 'x' + gameSize.y + ' FlxG:' + FlxG.width + 'x' + FlxG.height + ' offset:' + offset.x
+        + ',' + offset.y + ' cutout:' + cutoutSize.x + ',' + cutoutSize.y);
     }
     else
     {
@@ -328,11 +381,19 @@ class FullScreenScaleMode extends BaseScaleMode
   {
     if (enabled)
     {
-      cutoutSize.x = ratioAxis == X ? Math.ceil(Width - logicalSize.x) : 0;
-      cutoutSize.y = ratioAxis == Y ? Math.ceil(Height - logicalSize.y) : 0;
+      cutoutSize.x = ratioAxis == X ? Math.max(0, Math.ceil(Width - logicalSize.x)) : 0;
+      cutoutSize.y = ratioAxis == Y ? Math.max(0, Math.ceil(Height - logicalSize.y)) : 0;
+
+      var scaleX = (logicalSize.x > 0 && FlxG.initialWidth > 0) ? (logicalSize.x / FlxG.initialWidth) : 1.0;
+      var scaleY = (logicalSize.y > 0 && FlxG.initialHeight > 0) ? (logicalSize.y / FlxG.initialHeight) : 1.0;
+
       gameCutoutSize.copyFrom(cutoutSize);
-      gameCutoutSize.x /= logicalSize.x / FlxG.initialWidth;
-      gameCutoutSize.y /= logicalSize.y / FlxG.initialHeight;
+      if (scaleX > 0) gameCutoutSize.x = cutoutSize.x / scaleX;
+      else
+        gameCutoutSize.x = 0;
+      if (scaleY > 0) gameCutoutSize.y = cutoutSize.y / scaleY;
+      else
+        gameCutoutSize.y = 0;
     }
     else
     {
@@ -341,24 +402,38 @@ class FullScreenScaleMode extends BaseScaleMode
     }
   }
 
+  public function destroy():Void
+  {
+    #if !no_flixel_signals
+    try
+    {
+      if (resizeListener != null)
+      {
+        FlxG.signals.gameResized.remove(resizeListener);
+        resizeListener = null;
+      }
+    }
+    catch (e:Dynamic)
+    {
+      // ignore
+    }
+    #end
+
+    for (bitmap in cutoutBitmaps)
+      if (bitmap != null && bitmap.parent != null) bitmap.parent.removeChild(bitmap);
+    cutoutBitmaps = [null, null];
+  }
+
   @:noCompletion
   function set_enabled(Value:Bool):Bool
   {
     #if android
-    if (ratioAxis != FlxAxes.X || (Build.VERSION.SDK_INT < Build.VERSION_CODES.P && !Tools.isTablet()))
-    {
-      Value = false;
-    }
+    if (ratioAxis != FlxAxes.X || (Build.VERSION.SDK_INT < Build.VERSION_CODES.P && !Tools.isTablet())) Value = false;
     #end
     enabled = Value;
 
     if (instance != null && FlxG.scaleMode == instance)
     {
-      // instance.horizontalAlign = enabled ? LEFT : CENTER;
-      // instance.verticalAlign = enabled ? TOP : CENTER;
-      // instance.onMeasure(FlxG.stage.stageWidth, FlxG.stage.stageHeight);
-
-      // FlxG.signals.gameResized.dispatch(FlxG.stage.stageWidth, FlxG.stage.stageHeight);
       @:privateAccess
       FlxG.game.onResize(null);
     }

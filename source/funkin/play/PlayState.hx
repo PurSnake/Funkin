@@ -2163,8 +2163,8 @@ class PlayState extends MusicBeatSubState
     playerStrumline.fadeInArrows();
     opponentStrumline.fadeInArrows();
 
-    ratio.add(playerStrumline, 0, 1);
-    ratio.add(opponentStrumline, 0, 1);
+    // ratio.add(playerStrumline, 0, 1);
+    // ratio.add(opponentStrumline, 0, 1);
   }
 
   /**
