@@ -1867,8 +1867,8 @@ class PlayState extends MusicBeatSubState
     camGame.bgColor = BACKGROUND_COLOR; // Show a pink background behind the stage.
     camHUD.bgColor.alpha = 0; // Show the game scene behind the camera.
     camCutscene.bgColor.alpha = 0; // Show the game scene behind the camera.
-    camCutouts.setPosition((FlxG.width - FlxG.initialWidth) / 2, (FlxG.height - FlxG.initialHeight) / 2);
-    camCutouts.setSize(FlxG.initialWidth, FlxG.initialHeight);
+    // camCutouts.setPosition((FlxG.width - FlxG.initialWidth) / 2, (FlxG.height - FlxG.initialHeight) / 2);
+    // camCutouts.setSize(FlxG.initialWidth, FlxG.initialHeight);
     camCutouts.bgColor.alpha = 0; // Show the game scene behind the camera.
     if (Preferences.subtitles) camSubtitles.bgColor.alpha = 0; // Show the game scene behind the camera.
     camPause.bgColor.alpha = 0; // Show the game scene behind the camera.
@@ -1876,7 +1876,7 @@ class PlayState extends MusicBeatSubState
     FlxG.cameras.reset(camGame);
     FlxG.cameras.add(camHUD, false);
     FlxG.cameras.add(camCutscene, false);
-    FlxG.cameras.add(camCutouts, false);
+    // FlxG.cameras.add(camCutouts, false);
     if (Preferences.subtitles) FlxG.cameras.add(camSubtitles, false);
     FlxG.cameras.add(camPause, false);
 
