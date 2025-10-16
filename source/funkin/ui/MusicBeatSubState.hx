@@ -245,8 +245,8 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
     add(leftWatermarkText);
     add(rightWatermarkText);
 
-    ratio.add(leftWatermarkText, 1, 1);
-    ratio.add(rightWatermarkText, -1, 1);
+    ratio.add(leftWatermarkText, 1, -1);
+    ratio.add(rightWatermarkText, -1, -1);
   }
 
   /**

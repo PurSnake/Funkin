@@ -1898,13 +1898,14 @@ class PlayState extends MusicBeatSubState
       && !ControlsHandler.usingExternalInputDevice)
       || #end Preferences.downscroll;
 
-    var healthBarYPos:Float = isDownscroll ? FlxG.height * 0.1 : FlxG.height * 0.9;
+    var healthBarYPos:Float = isDownscroll ? FlxG.initialHeight * 0.1 : FlxG.initialHeight * 0.9;
 
     healthBarBG.x = (FlxG.initialWidth - healthBarBG.width) / 2;
     healthBarBG.y = healthBarYPos;
     healthBarBG.scrollFactor.set(0, 0);
     healthBarBG.zIndex = 800;
     add(healthBarBG);
+    ratio.moveObj(healthBarBG, true, true);
     ratio.add(healthBarBG, 0, -1);
 
     healthBar.x = healthBarBG.x + 4;
@@ -2150,6 +2151,12 @@ class PlayState extends MusicBeatSubState
     opponentStrumline.y = Preferences.downscroll ? FlxG.initialHeight - opponentStrumline.height - Constants.STRUMLINE_Y_OFFSET
       - noteStyle.getStrumlineOffsets()[1] : Constants.STRUMLINE_Y_OFFSET;
 
+    ratio.moveObj(playerStrumline, true, true);
+    ratio.add(playerStrumline, 0, 1);
+
+    ratio.moveObj(opponentStrumline, true, true);
+    ratio.add(opponentStrumline, 0, 1);
+
     opponentStrumline.zIndex = 1000;
     opponentStrumline.cameras = [camHUD];
 
@@ -2162,9 +2169,6 @@ class PlayState extends MusicBeatSubState
 
     playerStrumline.fadeInArrows();
     opponentStrumline.fadeInArrows();
-
-    // ratio.add(playerStrumline, 0, 1);
-    // ratio.add(opponentStrumline, 0, 1);
   }
 
   /**
