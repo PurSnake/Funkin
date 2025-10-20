@@ -47,7 +47,7 @@ class FullScreenScaleMode extends BaseScaleMode
   /**
    * The maximum aspect ratio a screen can have.
    */
-  public var maxAspectRatio:FlxPoint = new FlxPoint(20, 9);
+  public var maxAspectRatio:FlxPoint = new FlxPoint(21, 9);
 
   /**
    * The minimum aspect ratio a screen can have.

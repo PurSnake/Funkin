@@ -1906,7 +1906,7 @@ class PlayState extends MusicBeatSubState
     healthBarBG.zIndex = 800;
     add(healthBarBG);
     ratio.moveObj(healthBarBG, true, true);
-    ratio.add(healthBarBG, 0, -1);
+    ratio.add(healthBarBG, 0, isDownscroll ? 1 : -1);
 
     healthBar.x = healthBarBG.x + 4;
     healthBar.y = healthBarBG.y + 4;
@@ -1916,7 +1916,7 @@ class PlayState extends MusicBeatSubState
     healthBar.createFilledBar(Constants.COLOR_HEALTH_BAR_RED, Constants.COLOR_HEALTH_BAR_GREEN);
     healthBar.zIndex = 801;
     add(healthBar);
-    ratio.add(healthBar, 0, -1);
+    ratio.add(healthBar, 0, isDownscroll ? 1 : -1);
 
     // The score text below the health bar.
     scoreText.x = healthBarBG.x + healthBarBG.width - 190;
@@ -1925,7 +1925,7 @@ class PlayState extends MusicBeatSubState
     scoreText.scrollFactor.set();
     scoreText.zIndex = 802;
     add(scoreText);
-    ratio.add(scoreText, 0, -1);
+    ratio.add(scoreText, 0, isDownscroll ? 1 : -1);
 
     // Move the health bar to the HUD camera.
     healthBar.cameras = [camHUD];
@@ -2060,7 +2060,9 @@ class PlayState extends MusicBeatSubState
       dad.initHealthIcon(true); // Apply the character ID here
       iconP2.zIndex = 850;
       add(iconP2);
-      ratio.add(iconP2, 0, -1);
+      ratio.add(iconP2, 0, #if mobile (Preferences.controlsScheme == FunkinHitboxControlSchemes.Arrows
+        && !ControlsHandler.usingExternalInputDevice)
+        || #end Preferences.downscroll ? 1 : -1);
       iconP2.cameras = [camHUD];
 
       #if FEATURE_DISCORD_RPC
@@ -2084,7 +2086,9 @@ class PlayState extends MusicBeatSubState
       boyfriend.initHealthIcon(false); // Apply the character ID here
       iconP1.zIndex = 850;
       add(iconP1);
-      ratio.add(iconP1, 0, -1);
+      ratio.add(iconP1, 0, #if mobile (Preferences.controlsScheme == FunkinHitboxControlSchemes.Arrows
+        && !ControlsHandler.usingExternalInputDevice)
+        || #end Preferences.downscroll ? 1 : -1);
 
       iconP1.cameras = [camHUD];
     }
@@ -2152,14 +2156,13 @@ class PlayState extends MusicBeatSubState
       - noteStyle.getStrumlineOffsets()[1] : Constants.STRUMLINE_Y_OFFSET;
 
     ratio.moveObj(playerStrumline, true, true);
-    ratio.add(playerStrumline, 0, 1);
+    ratio.add(playerStrumline, 0, Preferences.downscroll ? -1 : 1);
 
     ratio.moveObj(opponentStrumline, true, true);
-    ratio.add(opponentStrumline, 0, 1);
+    ratio.add(opponentStrumline, 0, Preferences.downscroll ? -1 : 1);
 
     opponentStrumline.zIndex = 1000;
     opponentStrumline.cameras = [camHUD];
-
     #if mobile
     if (Preferences.controlsScheme == FunkinHitboxControlSchemes.Arrows && !ControlsHandler.usingExternalInputDevice)
     {
