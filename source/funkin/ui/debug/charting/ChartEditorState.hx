@@ -5446,14 +5446,14 @@ class ChartEditorState extends UIState // UIState derives from MusicBeatState
         charPreviewToolbox.title = 'Player Preview - ${charPlayer.charName}';
         charPreviewToolbox.invalidateComponentLayout();
       }
-
-      if (charPreviewToolbox != null && !charPreviewToolbox.minimized)
-      {
-        charPreviewToolbox.width = charPlayer.width + 32;
-        charPreviewToolbox.height = charPlayer.height + 64;
-      }
-      currentPlayerCharacterPlayer = charPlayer;
     }
+
+    if (charPreviewToolbox != null && !charPreviewToolbox.minimized)
+    {
+      charPreviewToolbox.width = charPlayer.width + 32;
+      charPreviewToolbox.height = charPlayer.height + 64;
+    }
+    currentPlayerCharacterPlayer = charPlayer;
   }
 
   function handleOpponentPreviewToolbox():Void
@@ -5485,14 +5485,14 @@ class ChartEditorState extends UIState // UIState derives from MusicBeatState
         charPreviewToolbox.title = 'Opponent Preview - ${charPlayer.charName}';
         charPreviewToolbox.invalidateComponentLayout();
       }
-
-      if (charPreviewToolbox != null && !charPreviewToolbox.minimized)
-      {
-        charPreviewToolbox.width = charPlayer.width + 32;
-        charPreviewToolbox.height = charPlayer.height + 64;
-      }
-      currentOpponentCharacterPlayer = charPlayer;
     }
+
+    if (charPreviewToolbox != null && !charPreviewToolbox.minimized)
+    {
+      charPreviewToolbox.width = charPlayer.width + 32;
+      charPreviewToolbox.height = charPlayer.height + 64;
+    }
+    currentOpponentCharacterPlayer = charPlayer;
   }
 
   function handleSelectionButtons():Void
