@@ -299,7 +299,7 @@ class CreditsState extends MusicBeatState
   function exit():Void
   {
     FlxG.keys.enabled = false;
-    FlxG.switchState(() -> new MainMenuState());
+    transitionTo(() -> new MainMenuState(), FadeTransition);
   }
 
   public override function destroy():Void

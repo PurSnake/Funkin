@@ -107,19 +107,19 @@ class DebugMenuSubState extends MusicBeatSubState
   {
     FlxTransitionableState.skipNextTransIn = true;
 
-    FlxG.switchState(() -> new ChartEditorState());
+    transitionTo(() -> new ChartEditorState(), InstantTransition);
   }
   #end
 
   function openCharSelect():Void
   {
-    FlxG.switchState(() -> new funkin.ui.charSelect.CharSelectSubState());
+    transitionTo(() -> new funkin.ui.charSelect.CharSelectSubState(), InstantTransition);
   }
 
   #if FEATURE_ANIMATION_EDITOR
   function openAnimationEditor():Void
   {
-    FlxG.switchState(() -> new funkin.ui.debug.anim.DebugBoundingState());
+    transitionTo(() -> new funkin.ui.debug.anim.DebugBoundingState(), InstantTransition);
     trace('Animation Editor');
   }
   #end
@@ -134,14 +134,14 @@ class DebugMenuSubState extends MusicBeatSubState
   function openStageEditor():Void
   {
     trace('Stage Editor');
-    FlxG.switchState(() -> new funkin.ui.debug.stageeditor.StageEditorState());
+    transitionTo(() -> new funkin.ui.debug.stageeditor.StageEditorState(), InstantTransition);
   }
   #end
 
   #if FEATURE_RESULTS_DEBUG
   function openTestResultsScreen():Void
   {
-    FlxG.switchState(() -> new funkin.ui.debug.results.ResultsDebugSubState());
+    transitionTo(() -> new funkin.ui.debug.results.ResultsDebugSubState(), InstantTransition);
   }
   #end
 

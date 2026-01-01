@@ -75,7 +75,7 @@ class ConversationDebugState extends MusicBeatState
         remove(conversation);
         conversation = null;
 
-        FlxG.switchState(() -> new ConversationDebugState());
+        transitionTo(() -> new ConversationDebugState(), InstantTransition);
       }
     }
   }

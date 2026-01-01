@@ -13,6 +13,7 @@ import funkin.util.SortUtil;
 import funkin.util.WindowUtil;
 import flixel.util.FlxSort;
 import funkin.input.Controls;
+import flixel.util.typeLimit.NextState;
 #if mobile
 import funkin.graphics.FunkinCamera;
 import funkin.mobile.ui.FunkinHitbox;
@@ -301,5 +302,11 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
   function onCloseSubStateComplete(targetState:FlxSubState):Void
   {
     dispatchEvent(new SubStateScriptEvent(SUBSTATE_CLOSE_END, targetState, true));
+  }
+
+  public function transitionTo(nextState:NextState, ?type:Class<BasicTransition>, ?extraData:Dynamic):Void
+  {
+    FunkinTransitions.transitionTo(nextState);
+    // FunkinTransitions.transitionTo(nextState, type, extraData);
   }
 }

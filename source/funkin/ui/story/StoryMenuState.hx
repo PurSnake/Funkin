@@ -736,7 +736,7 @@ class StoryMenuState extends MusicBeatState
 
     exitingMenu = true;
     FlxG.keys.enabled = false;
-    FlxG.switchState(() -> new MainMenuState());
+    transitionTo(() -> new MainMenuState(), FadeTransition);
     FunkinSound.playOnce(Paths.sound('cancelMenu'));
   }
 

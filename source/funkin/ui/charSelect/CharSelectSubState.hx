@@ -704,14 +704,14 @@ class CharSelectSubState extends MusicBeatSubState
     FlxTween.tween(camFollow, {y: camFollow.y - 150}, 0.8,
       {
         ease: FlxEase.backIn,
-        onComplete: function(_) {
-          FlxG.switchState(() -> FreeplayState.build(
+        onComplete: _ -> {
+          transitionTo(() -> FreeplayState.build(
             {
               {
                 character: wentBackToFreeplay ? rememberedChar : curChar,
                 fromCharSelect: true
               }
-            }));
+            }), InstantTransition);
         }
       });
   }

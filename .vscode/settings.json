@@ -186,5 +186,10 @@
   "vscord.app.privacyMode.enable": true,
   "json.schemas": [
     { "fileMatch": ["/hmm.json"], "url": "./.vscode/schema/hmm.json" }
-  ]
+  ],
+  "discord.detailsDebugging": "Nothing for you to see here",
+  "discord.detailsEditing": "Nothing for you to see here",
+  "discord.detailsIdling": "Nothing for you to see here",
+  "discord.lowerDetailsDebugging": "Debugging: Funkin-secret™",
+  "discord.lowerDetailsEditing": "Workspace: Funkin-secret™"
 }

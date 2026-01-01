@@ -335,7 +335,7 @@ class DebugBoundingState extends FlxState
 
     if (FlxG.keys.justPressed.H) hudCam.visible = !hudCam.visible;
 
-    if (FlxG.keys.justPressed.F4) FlxG.switchState(() -> new MainMenuState());
+    if (FlxG.keys.justPressed.F4) transitionTo(() -> new MainMenuState(), InstantTransition);
 
     MouseUtil.mouseCamDrag();
     if (!haxeUIFocused) MouseUtil.mouseWheelZoom();

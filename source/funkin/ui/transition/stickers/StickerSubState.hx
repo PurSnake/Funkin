@@ -215,13 +215,7 @@ class StickerSubState extends MusicBeatSubState
                 funkin.FunkinMemory.purgeCache(true);
                 #end
               });
-            FlxG.switchState(() -> {
-              // TODO: Rework this asset caching stuff
-              // NOTE: This has to come AFTER the state switch,
-              // otherwise the game tries to render destroyed sprites!
-              // FunkinSprite.preparePurgeCache();
-              return targetState(this);
-            });
+            transitionTo(() -> targetState(this), InstantTransition);
           }
         });
       });

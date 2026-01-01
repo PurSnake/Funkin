@@ -442,7 +442,7 @@ class MainMenuState extends MusicBeatState
 
     FlxTimer.wait(fadeOutDuration, () -> {
       trace('Exiting MainMenuState...');
-      FlxG.switchState(state);
+      transitionTo(state, FadeTransition);
     });
   }
 
@@ -519,7 +519,7 @@ class MainMenuState extends MusicBeatState
 
     if (InputUtil.allPressedWithDebounce([CONTROL, ALT, SHIFT, P]))
     {
-      FlxG.switchState(() -> new funkin.ui.charSelect.CharacterUnlockState('pico'));
+      transitionTo(() -> new funkin.ui.charSelect.CharacterUnlockState('pico'), InstantTransition);
     }
 
     if (InputUtil.allPressedWithDebounce([CONTROL, ALT, SHIFT, W]))
@@ -624,6 +624,6 @@ class MainMenuState extends MusicBeatState
     rememberedSelectedIndex = menuItems?.selectedIndex ?? 0;
     FunkinSound.playOnce(Paths.sound('cancelMenu'));
 
-    FlxG.switchState(() -> new TitleState());
+    transitionTo(() -> new TitleState(), FadeTransition);
   }
 }

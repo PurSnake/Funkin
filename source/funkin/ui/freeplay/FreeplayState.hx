@@ -1519,7 +1519,7 @@ class FreeplayState extends MusicBeatSubState
 
     // Passing the currrent Freeplay character to the CharSelect so we can start it with that character selected
     new FlxTimer().start(0.9, _ -> {
-      FlxG.switchState(() -> new funkin.ui.charSelect.CharSelectSubState({character: currentCharacterId}));
+      transitionTo(() -> new funkin.ui.charSelect.CharSelectSubState({character: currentCharacterId}), InstantTransition);
     });
 
     for (grpSpr in exitMoversCharSel.keys())
@@ -1629,12 +1629,12 @@ class FreeplayState extends MusicBeatSubState
     #if FEATURE_DEBUG_FUNCTIONS
     if (FlxG.keys.justPressed.P)
     {
-      FlxG.switchState(() -> FreeplayState.build(
+      transitionTo(() -> FreeplayState.build(
         {
           {
             character: currentCharacterId == "pico" ? Constants.DEFAULT_CHARACTER : "pico",
           }
-        }));
+        }), InstantTransition);
     }
 
     if (FlxG.keys.justPressed.T)
@@ -1866,12 +1866,12 @@ class FreeplayState extends MusicBeatSubState
       // if (dj != null) dj.confirm();
       dj?.onConfirm();
       new FlxTimer().start(styleData?.getStartDelay(), function(tmr:FlxTimer) {
-        FlxG.switchState(() -> new ChartEditorState(
+        transitionTo(() -> new ChartEditorState(
           {
             targetSongId: targetSongID,
             targetSongDifficulty: currentDifficulty,
             targetSongVariation: currentVariation,
-          }));
+          }), InstantTransition);
       });
       return;
     }
@@ -1927,14 +1927,13 @@ class FreeplayState extends MusicBeatSubState
         uiStateMachine.transition(Idle);
         return;
       }
-
-      FlxG.switchState(() -> new StageEditorState(
+      transitionTo(() -> new StageEditorState(
         {
           targetStageId: targetDifficulty.stage,
           targetBfChar: targetDifficulty.characters.player,
           targetGfChar: targetDifficulty.characters.girlfriend,
           targetDadChar: targetDifficulty.characters.opponent
-        }));
+        }), InstantTransition);
       return;
     }
     #end
@@ -2268,7 +2267,7 @@ class FreeplayState extends MusicBeatSubState
       }
       else
       {
-        FlxG.switchState(() -> new MainMenuState());
+        transitionTo(() -> new MainMenuState(), FadeTransition);
       }
     });
   }

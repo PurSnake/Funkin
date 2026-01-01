@@ -15,6 +15,7 @@ import funkin.util.SortUtil;
 import funkin.util.WindowUtil;
 import funkin.input.Controls;
 import funkin.ui.FullScreenScaleMode;
+import flixel.util.typeLimit.NextState;
 #if mobile
 import funkin.graphics.FunkinCamera;
 import funkin.mobile.ui.FunkinHitbox;
@@ -302,5 +303,19 @@ class MusicBeatState extends FlxTransitionableState implements IEventHandler
   function onCloseSubStateComplete(targetState:FlxSubState):Void
   {
     dispatchEvent(new SubStateScriptEvent(SUBSTATE_CLOSE_END, targetState, true));
+  }
+
+  // TEST FIELD //
+
+  public override function transitionIn():Void
+  {
+    // todo: rewrite like
+    // FunkinTransitions.attemptTransitionIn();
+  }
+
+  public function transitionTo(nextState:NextState, ?type:Class<BasicTransition>, ?extraData:Dynamic):Void
+  {
+    FunkinTransitions.transitionTo(nextState);
+    // FunkinTransitions.transitionTo(nextState, type, extraData);
   }
 }

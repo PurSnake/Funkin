@@ -192,7 +192,7 @@ class TitleState extends MusicBeatState
   {
     FlxG.sound.music.fadeOut(2.0, 0);
     FlxG.camera.fade(FlxColor.BLACK, 2.0, false, function() {
-      FlxG.switchState(() -> new AttractState());
+      transitionTo(() -> new AttractState(), InstantTransition);
     });
   }
 
@@ -342,7 +342,7 @@ class TitleState extends MusicBeatState
     }
 
     funkin.FunkinMemory.purgeCache();
-    FlxG.switchState(() -> new MainMenuState());
+    transitionTo(() -> new MainMenuState(), FadeTransition);
   }
 
   override function draw()

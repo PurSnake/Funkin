@@ -1309,7 +1309,7 @@ class StageEditorState extends UIState
         CrashHandler.criticalErrorSignal.remove(autosavePerCrash);
 
         Cursor.hide();
-        FlxG.switchState(() -> new MainMenuState());
+        transitionTo(() -> new MainMenuState(), FadeTransition);
         FlxG.sound.music.stop();
 
       case "switch mode":
@@ -1647,6 +1647,7 @@ typedef StageEditorParams =
    * If non-null, load this stage immediately instead of the welcome screen.
    */
   var ?targetStageId:String;
+
   /**
    * If non-null, load this character as Boyfriend.
    */

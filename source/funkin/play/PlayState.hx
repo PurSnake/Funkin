@@ -1017,7 +1017,7 @@ class PlayState extends MusicBeatSubState
       else
       {
         if (currentStage != null) this.remove(currentStage);
-        FlxG.switchState(() -> new MainMenuState());
+        transitionTo(() -> new MainMenuState(), FadeTransition);
       }
       return false;
     }
@@ -1376,7 +1376,7 @@ class PlayState extends MusicBeatSubState
           if (!isSubState && event.gitaroo)
           {
             if (currentStage != null) this.remove(currentStage);
-            FlxG.switchState(() -> new GitarooPause(lastParams));
+            transitionTo(() -> new GitarooPause(lastParams), InstantTransition);
           }
           else
           {
@@ -3183,13 +3183,14 @@ class PlayState extends MusicBeatSubState
       var bf:String = currentStage?.getBoyfriend()?.characterId ?? '';
       var gf:String = currentStage?.getGirlfriend()?.characterId ?? '';
       var dad:String = currentStage?.getDad()?.characterId ?? '';
-      FlxG.switchState(() -> new StageEditorState(
+
+      transitionTo(() -> new StageEditorState(
         {
           targetStageId: currentStageId,
           targetBfChar: bf,
           targetGfChar: gf,
           targetDadChar: dad
-        }));
+        }), InstantTransition);
     }
     #end
 
@@ -3208,13 +3209,13 @@ class PlayState extends MusicBeatSubState
       else
       {
         if (currentStage != null) this.remove(currentStage);
-        FlxG.switchState(() -> new ChartEditorState(
+        transitionTo(() -> new ChartEditorState(
           {
             targetSongId: currentSong.id,
             targetSongDifficulty: currentDifficulty,
             targetSongVariation: currentVariation,
             targetSongPosition: Conductor.instance.songPosition
-          }));
+          }), InstantTransition);
       }
     }
     #end

@@ -202,7 +202,7 @@ class LoadingState extends MusicBeatSubState
     }
     else
     {
-      FlxG.switchState(target);
+      transitionTo(target, InstantTransition);
     }
   }
 
@@ -215,7 +215,7 @@ class LoadingState extends MusicBeatSubState
 
   /**
    * Starts the transition to a new `PlayState` to start a new song.
-   * First switches to the `LoadingState` if assets need to be loaded.
+   * First switches to the `LoadingState` if assets need to b e loaded.
    * @param params The parameters for the next `PlayState`.
    * @param asSubState Whether to open as a substate rather than switching to the `PlayState`.
    * @param shouldStopMusic Whether to stop the current music while loading.
@@ -258,7 +258,7 @@ class LoadingState extends MusicBeatSubState
     }
     else
     {
-      FlxG.switchState(loadStateCtor);
+      transitionTo(loadStateCtor, InstantTransition);
     }
     #else
     // All assets preloaded, switch directly to play state (defualt on other targets).
@@ -359,7 +359,7 @@ class LoadingState extends MusicBeatSubState
         funkin.FunkinMemory.clearFreeplay();
         funkin.FunkinMemory.purgeCache(true);
       });
-      FlxG.switchState(playStateCtor);
+      transitionTo(playStateCtor, InstantTransition);
     }
     #end
   }
@@ -501,7 +501,7 @@ class LoadingState extends MusicBeatSubState
 
   public static function transitionToState(state:NextState, stopMusic:Bool = false):Void
   {
-    FlxG.switchState(() -> new LoadingState(state, stopMusic));
+    transitionTo(() -> new LoadingState(state, stopMusic), InstantTransition);
   }
 }
 
