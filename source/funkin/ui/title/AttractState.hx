@@ -198,10 +198,10 @@ class AttractState extends MusicBeatState
     #end
 
     #if (html5 || hxvlc)
-    vid.destroy();
+    vid?.destroy();
     vid = null;
     #end
 
-    transitionTo(() -> new TitleState(), InstantTransition);
+    transitionTo(() -> new TitleState(), "instant");
   }
 }

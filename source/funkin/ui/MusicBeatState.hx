@@ -309,13 +309,13 @@ class MusicBeatState extends FlxTransitionableState implements IEventHandler
 
   public override function transitionIn():Void
   {
-    // todo: rewrite like
-    // FunkinTransitions.attemptTransitionIn();
+    trace("ASASASSA");
+    FunkinTransitions.startInTransitionIn();
   }
 
-  public function transitionTo(nextState:NextState, ?type:Class<BasicTransition>, ?extraData:Dynamic):Void
+  public function transitionTo(nextState:NextState, ?type:String, ?extraData:Dynamic):Void
   {
-    FunkinTransitions.transitionTo(nextState);
+    FunkinTransitions.startOutTransition(nextState, type, extraData);
     // FunkinTransitions.transitionTo(nextState, type, extraData);
   }
 }

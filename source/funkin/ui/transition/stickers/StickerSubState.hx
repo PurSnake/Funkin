@@ -215,7 +215,7 @@ class StickerSubState extends MusicBeatSubState
                 funkin.FunkinMemory.purgeCache(true);
                 #end
               });
-            transitionTo(() -> targetState(this), InstantTransition);
+            transitionTo(() -> targetState(this), "instant");
           }
         });
       });

@@ -117,6 +117,8 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
   {
     super.create();
 
+    transitionIn();
+
     createWatermarkText();
 
     Conductor.beatHit.add(this.beatHit);
@@ -304,9 +306,14 @@ class MusicBeatSubState extends FlxSubState implements IEventHandler
     dispatchEvent(new SubStateScriptEvent(SUBSTATE_CLOSE_END, targetState, true));
   }
 
-  public function transitionTo(nextState:NextState, ?type:Class<BasicTransition>, ?extraData:Dynamic):Void
+  public function transitionIn():Void
   {
-    FunkinTransitions.transitionTo(nextState);
+    if (this._parentState == null) FunkinTransitions.startInTransitionIn();
+  }
+
+  public function transitionTo(nextState:NextState, ?type:String, ?extraData:Dynamic):Void
+  {
+    FunkinTransitions.startOutTransition(nextState, type, extraData);
     // FunkinTransitions.transitionTo(nextState, type, extraData);
   }
 }

@@ -24,7 +24,7 @@ class SaveDataMenu extends Page<OptionsState.OptionsMenuPageName>
         openConfirmPrompt("This will overwrite
         \nALL your save data.
         \nAre you sure?", "Overwrite",
-          () -> Save.loadFromNewgrounds(() -> transitionTo(() -> new funkin.InitState(), InstantTransition)));
+          () -> Save.loadFromNewgrounds(() -> FunkinTransitions.startOutTransition(() -> new funkin.InitState(), "instant")));
       });
 
       createItem("SAVE TO NG", function() {
@@ -107,7 +107,7 @@ class SaveDataMenu extends Page<OptionsState.OptionsMenuPageName>
       // Clear the save data.
       Save.clearData();
 
-      transitionTo(() -> new funkin.InitState(), InstantTransition);
+      FunkinTransitions.startOutTransition(() -> new funkin.InitState(), "instant");
     });
   }
 

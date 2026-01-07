@@ -5939,7 +5939,7 @@ class ChartEditorState extends UIState // UIState derives from MusicBeatState
     stopWelcomeMusic();
     // TODO: PR Flixel to make onComplete nullable.
     if (audioInstTrack != null) audioInstTrack.onComplete = null;
-    transitionTo(() -> new MainMenuState(), InstantTransition);
+    transitionTo(() -> new MainMenuState(), "instant");
 
     resetWindowTitle();
 

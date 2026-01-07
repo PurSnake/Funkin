@@ -202,7 +202,7 @@ class LoadingState extends MusicBeatSubState
     }
     else
     {
-      transitionTo(target, InstantTransition);
+      transitionTo(target, "instant");
     }
   }
 
@@ -258,7 +258,7 @@ class LoadingState extends MusicBeatSubState
     }
     else
     {
-      transitionTo(loadStateCtor, InstantTransition);
+      FunkinTransitions.startOutTransition(loadStateCtor, "fade");
     }
     #else
     // All assets preloaded, switch directly to play state (defualt on other targets).
@@ -359,7 +359,7 @@ class LoadingState extends MusicBeatSubState
         funkin.FunkinMemory.clearFreeplay();
         funkin.FunkinMemory.purgeCache(true);
       });
-      transitionTo(playStateCtor, InstantTransition);
+      FunkinTransitions.startOutTransition(playStateCtor, "fade");
     }
     #end
   }
@@ -501,7 +501,7 @@ class LoadingState extends MusicBeatSubState
 
   public static function transitionToState(state:NextState, stopMusic:Bool = false):Void
   {
-    transitionTo(() -> new LoadingState(state, stopMusic), InstantTransition);
+    FunkinTransitions.startOutTransition(() -> new LoadingState(state, stopMusic), "instant");
   }
 }
 

@@ -52,7 +52,7 @@ class ResultsDebugSubState extends MusicBeatSubState
           openSubState(resultState);
         }
         else
-          transitionTo(() -> new funkin.play.ResultState(resultsParams), InstantTransition);
+          transitionTo(() -> new funkin.play.ResultState(resultsParams), "instant");
       });
     });
     createToggleListItem("Character", PlayerRegistry.instance.listEntryIds(), function(result:String) {

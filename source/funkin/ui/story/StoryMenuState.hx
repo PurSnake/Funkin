@@ -629,14 +629,12 @@ class StoryMenuState extends MusicBeatState
 
       var targetVariation:String = targetSong.getFirstValidVariation(PlayStatePlaylist.campaignDifficulty);
 
-      FlxG.camera.fade(FlxColor.BLACK, 0.2, false, function() {
-        LoadingState.loadPlayState(
-          {
-            targetSong: targetSong,
-            targetDifficulty: PlayStatePlaylist.campaignDifficulty,
-            targetVariation: targetVariation
-          }, true);
-      });
+      LoadingState.loadPlayState(
+        {
+          targetSong: targetSong,
+          targetDifficulty: PlayStatePlaylist.campaignDifficulty,
+          targetVariation: targetVariation
+        }, true);
     });
   }
 
@@ -736,7 +734,7 @@ class StoryMenuState extends MusicBeatState
 
     exitingMenu = true;
     FlxG.keys.enabled = false;
-    transitionTo(() -> new MainMenuState(), FadeTransition);
+    transitionTo(() -> new MainMenuState(), "fade");
     FunkinSound.playOnce(Paths.sound('cancelMenu'));
   }
 

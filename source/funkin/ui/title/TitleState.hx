@@ -192,7 +192,7 @@ class TitleState extends MusicBeatState
   {
     FlxG.sound.music.fadeOut(2.0, 0);
     FlxG.camera.fade(FlxColor.BLACK, 2.0, false, function() {
-      transitionTo(() -> new AttractState(), InstantTransition);
+      transitionTo(() -> new AttractState(), "instant");
     });
   }
 
@@ -294,7 +294,7 @@ class TitleState extends MusicBeatState
     // If you spam Enter, we should skip the transition.
     if (pressedEnter && transitioning && skippedIntro)
     {
-      moveToMainMenu();
+      moveToMainMenu(true);
     }
 
     if (pressedEnter && !transitioning && skippedIntro)
@@ -333,7 +333,7 @@ class TitleState extends MusicBeatState
     super.update(elapsed);
   }
 
-  function moveToMainMenu():Void
+  function moveToMainMenu(forse:Bool = false):Void
   {
     if (attractTimer != null)
     {
@@ -342,7 +342,7 @@ class TitleState extends MusicBeatState
     }
 
     funkin.FunkinMemory.purgeCache();
-    transitionTo(() -> new MainMenuState(), FadeTransition);
+    transitionTo(() -> new MainMenuState(), (forse ? "instant" : "fade"));
   }
 
   override function draw()

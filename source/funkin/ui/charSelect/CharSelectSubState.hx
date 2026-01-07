@@ -711,7 +711,7 @@ class CharSelectSubState extends MusicBeatSubState
                 character: wentBackToFreeplay ? rememberedChar : curChar,
                 fromCharSelect: true
               }
-            }), InstantTransition);
+            }), "instant");
         }
       });
   }

@@ -1031,7 +1031,7 @@ class ResultState extends MusicBeatSubState
                 funkin.FunkinMemory.purgeCache(true);
                 #end
               });
-              transitionTo(() -> targetState, InstantTransition);
+              transitionTo(() -> targetState, "instant");
             }
           }
         });
@@ -1061,7 +1061,7 @@ class ResultState extends MusicBeatSubState
           funkin.FunkinMemory.purgeCache(true);
           #end
         });
-        transitionTo(() -> targetState, InstantTransition);
+        transitionTo(() -> targetState, "instant");
       }
     }
   }

@@ -215,7 +215,7 @@ class ControlsSchemeMenu extends MusicBeatSubState
     FlxTransitionableState.skipNextTransIn = true;
     FlxTransitionableState.skipNextTransOut = true;
 
-    transitionTo(() -> new funkin.ui.options.OptionsState(), FadeTransition);
+    transitionTo(() -> new funkin.ui.options.OptionsState(), "fade");
   }
 
   /**

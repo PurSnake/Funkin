@@ -1017,7 +1017,7 @@ class PlayState extends MusicBeatSubState
       else
       {
         if (currentStage != null) this.remove(currentStage);
-        transitionTo(() -> new MainMenuState(), FadeTransition);
+        transitionTo(() -> new MainMenuState(), "fade");
       }
       return false;
     }
@@ -1376,7 +1376,7 @@ class PlayState extends MusicBeatSubState
           if (!isSubState && event.gitaroo)
           {
             if (currentStage != null) this.remove(currentStage);
-            transitionTo(() -> new GitarooPause(lastParams), InstantTransition);
+            transitionTo(() -> new GitarooPause(lastParams), "instant");
           }
           else
           {
@@ -3190,7 +3190,7 @@ class PlayState extends MusicBeatSubState
           targetBfChar: bf,
           targetGfChar: gf,
           targetDadChar: dad
-        }), InstantTransition);
+        }), "instant");
     }
     #end
 
@@ -3215,7 +3215,7 @@ class PlayState extends MusicBeatSubState
             targetSongDifficulty: currentDifficulty,
             targetSongVariation: currentVariation,
             targetSongPosition: Conductor.instance.songPosition
-          }), InstantTransition);
+          }), "instant");
       }
     }
     #end

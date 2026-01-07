@@ -1309,7 +1309,7 @@ class StageEditorState extends UIState
         CrashHandler.criticalErrorSignal.remove(autosavePerCrash);
 
         Cursor.hide();
-        transitionTo(() -> new MainMenuState(), FadeTransition);
+        transitionTo(() -> new MainMenuState(), "fade");
         FlxG.sound.music.stop();
 
       case "switch mode":

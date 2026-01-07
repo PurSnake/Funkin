@@ -25,7 +25,7 @@ class EvacuateDebugPlugin extends FlxBasic
 
     if (FlxG.keys.justPressed.F4)
     {
-      transitionTo(() -> new funkin.ui.mainmenu.MainMenuState(), InstantTransition);
+      FunkinTransitions.startOutTransition(() -> new funkin.ui.mainmenu.MainMenuState(), "instant");
     }
   }
 

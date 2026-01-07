@@ -83,11 +83,11 @@ class GitarooPause extends MusicBeatState
         FlxTransitionableState.skipNextTransIn = false;
         FlxTransitionableState.skipNextTransOut = false;
         if (funkin.ui.FullScreenScaleMode.instance != null) funkin.ui.FullScreenScaleMode.instance.onMeasurePostAwait();
-        transitionTo(() -> new PlayState(previousParams), FadeTransition);
+        transitionTo(() -> new PlayState(previousParams), "fade");
       }
       else
       {
-        transitionTo(() -> new MainMenuState(), FadeTransition);
+        transitionTo(() -> new MainMenuState(), "fade");
       }
     }
 

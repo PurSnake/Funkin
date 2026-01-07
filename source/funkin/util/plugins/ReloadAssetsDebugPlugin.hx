@@ -81,7 +81,7 @@ class ReloadAssetsDebugPlugin extends FlxBasic
       {
         trace("Reloading scripted state: " + path);
         var state:Dynamic = ScriptedMusicBeatState.init(path);
-        transitionTo(state, InstantTransition);
+        FunkinTransitions.startOutTransition(state, "instant");
       }
 
       // Create a new instance of the current state, so old data is cleared.

@@ -275,7 +275,7 @@ class PauseSubState extends MusicBeatSubState
 
     regenerateMenu();
 
-    transitionIn();
+    transitionInMenu();
 
     startCharterTimer();
   }
@@ -562,7 +562,7 @@ class PauseSubState extends MusicBeatSubState
   /**
    * Perform additional animations to transition the pause menu in when it is first displayed.
    */
-  function transitionIn():Void
+  function transitionInMenu():Void
   {
     FlxTween.tween(background, {alpha: 0.6}, 0.8, {ease: FlxEase.quartOut});
 

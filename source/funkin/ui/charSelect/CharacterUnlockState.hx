@@ -135,7 +135,7 @@ class CharacterUnlockState extends MusicBeatState
       #else
       funkin.FunkinMemory.purgeCache(true);
       #end
-      transitionTo(() -> nextState, FadeTransition);
+      transitionTo(() -> nextState, "fade");
     });
   }
 }

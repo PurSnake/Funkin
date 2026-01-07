@@ -75,7 +75,7 @@ class ConversationDebugState extends MusicBeatState
         remove(conversation);
         conversation = null;
 
-        transitionTo(() -> new ConversationDebugState(), InstantTransition);
+        transitionTo(() -> new ConversationDebugState(), "instant");
       }
     }
   }

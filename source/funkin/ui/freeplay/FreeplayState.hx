@@ -1519,7 +1519,7 @@ class FreeplayState extends MusicBeatSubState
 
     // Passing the currrent Freeplay character to the CharSelect so we can start it with that character selected
     new FlxTimer().start(0.9, _ -> {
-      transitionTo(() -> new funkin.ui.charSelect.CharSelectSubState({character: currentCharacterId}), InstantTransition);
+      transitionTo(() -> new funkin.ui.charSelect.CharSelectSubState({character: currentCharacterId}), "instant");
     });
 
     for (grpSpr in exitMoversCharSel.keys())
@@ -1634,7 +1634,7 @@ class FreeplayState extends MusicBeatSubState
           {
             character: currentCharacterId == "pico" ? Constants.DEFAULT_CHARACTER : "pico",
           }
-        }), InstantTransition);
+        }), "instant");
     }
 
     if (FlxG.keys.justPressed.T)
@@ -1871,7 +1871,7 @@ class FreeplayState extends MusicBeatSubState
             targetSongId: targetSongID,
             targetSongDifficulty: currentDifficulty,
             targetSongVariation: currentVariation,
-          }), InstantTransition);
+          }), "instant");
       });
       return;
     }
@@ -1933,7 +1933,7 @@ class FreeplayState extends MusicBeatSubState
           targetBfChar: targetDifficulty.characters.player,
           targetGfChar: targetDifficulty.characters.girlfriend,
           targetDadChar: targetDifficulty.characters.opponent
-        }), InstantTransition);
+        }), "instant");
       return;
     }
     #end
@@ -2267,7 +2267,7 @@ class FreeplayState extends MusicBeatSubState
       }
       else
       {
-        transitionTo(() -> new MainMenuState(), FadeTransition);
+        transitionTo(() -> new MainMenuState(), "fade");
       }
     });
   }
@@ -2769,28 +2769,26 @@ class FreeplayState extends MusicBeatSubState
         FlxTween.tween(backButton, {alpha: 0}, 0.2, {ease: FlxEase.quadOut});
       }
       #end
-      funnyCam.fade(FlxColor.BLACK, 0.2, false, function() {
-        Paths.setCurrentLevel(cap?.freeplayData?.levelId);
-        LoadingState.loadPlayState(
-          {
-            targetSong: targetSong,
-            targetDifficulty: currentDifficulty,
-            targetVariation: currentVariation,
-            targetInstrumental: targetInstId,
-            practiceMode: false,
-            minimalMode: false,
+      Paths.setCurrentLevel(cap?.freeplayData?.levelId);
+      LoadingState.loadPlayState(
+        {
+          targetSong: targetSong,
+          targetDifficulty: currentDifficulty,
+          targetVariation: currentVariation,
+          targetInstrumental: targetInstId,
+          practiceMode: false,
+          minimalMode: false,
 
-            #if FEATURE_DEBUG_FUNCTIONS
-            botPlayMode: FlxG.keys.pressed.SHIFT,
-            #else
-            botPlayMode: false,
-            #end
-            // TODO: Make these an option! It's currently only accessible via chart editor.
-            // startTimestamp: 0.0,
-            // playbackRate: 0.5,
-            // botPlayMode: true,
-          }, true);
-      });
+          #if FEATURE_DEBUG_FUNCTIONS
+          botPlayMode: FlxG.keys.pressed.SHIFT,
+          #else
+          botPlayMode: false,
+          #end
+          // TODO: Make these an option! It's currently only accessible via chart editor.
+          // startTimestamp: 0.0,
+          // playbackRate: 0.5,
+          // botPlayMode: true,
+        }, true);
     });
   }
 
