@@ -15,6 +15,7 @@ import funkin.save.Save;
 import hxvlc.util.Handle;
 #end
 import openfl.display.Sprite;
+import openfl.display.MovieClip;
 import openfl.events.Event;
 import openfl.Lib;
 import openfl.media.Video;
@@ -23,20 +24,47 @@ import funkin.util.WindowUtil;
 
 using funkin.util.AnsiUtil;
 
-/**
- * The main class which initializes HaxeFlixel and starts the game in its initial state.
- */
-class Main extends Sprite
+/*
+  import flixel.FlxG;
+  import flixel.FlxGame;
+  import flixel.FlxState;
+  import funkin.util.logging.CrashHandler;
+  import funkin.save.Save;
+  import haxe.ui.Toolkit;
+  import haxe.io.Path;
+  import openfl.display.Sprite;
+
+  import openfl.events.Event;
+  import openfl.Lib;
+  import openfl.text.TextField;
+  import openfl.text.TextFormat;
+  import sys.FileSystem;
+  import funkin.ui.FullScreenScaleMode;
+  import lime.app.Application;
+  import openfl.utils.Assets;
+  import openfl.display.BitmapData; */
+class Main extends flixel.FlxGame
 {
+  public static var mainInstance(default, null):Sprite;
+  public static var applicationScreen(get, never):MovieClip;
+
+  @:noCompletion inline static function get_applicationScreen()
+    return Lib.current;
+
+  public static function main():Void
+  {
+    startGame();
+  }
+
   var gameWidth:Int = 1280; // Width of the game in pixels (might be less / more in actual pixels depending on your zoom).
   var gameHeight:Int = 720; // Height of the game in pixels (might be less / more in actual pixels depending on your zoom).
   var initialState:Class<FlxState> = funkin.InitState; // The FlxState the game starts with.
   var zoom:Float = -1; // If -1, zoom is automatically calculated to fit the window dimensions.
   var skipSplash:Bool = true; // Whether to skip the flixel splash screen that appears in release mode.
 
-  // You can pretty much ignore everything from here on - your code should go in your states.
+  public static var debugDisplay:FunkinDebugDisplay;
 
-  public static function main():Void
+  public static function startGame():Void
   {
     // Set the current working directory for Android and iOS devices
     #if android
@@ -50,15 +78,11 @@ class Main extends Sprite
     // We need to make the crash handler LITERALLY FIRST so nothing EVER gets past it.
     CrashHandler.initialize();
     CrashHandler.queryStatus();
-
-    Lib.current.addChild(new Main());
+    mainInstance = new Main();
   }
 
   public function new()
   {
-    super();
-
-    // Initialize custom logging.
     haxe.Log.trace = funkin.util.logging.AnsiTrace.trace;
     funkin.util.logging.AnsiTrace.traceBF();
 
@@ -69,23 +93,6 @@ class Main extends Sprite
     // Load mods to override assets.
     // TODO: Replace with loadEnabledMods() once the user can configure the mod list.
     funkin.modding.PolymodHandler.loadAllMods();
-
-    if (stage != null)
-    {
-      init();
-    }
-    else
-    {
-      addEventListener(Event.ADDED_TO_STAGE, init);
-    }
-  }
-
-  function init(?event:Event):Void
-  {
-    if (hasEventListener(Event.ADDED_TO_STAGE))
-    {
-      removeEventListener(Event.ADDED_TO_STAGE, init);
-    }
 
     // Manually crash the game when using a software renderer in order to give a nicer error message.
     var context = stage.window.context.type;
@@ -104,18 +111,9 @@ class Main extends Sprite
 
       WindowUtil.showError('Failed to initialize $tech', desc);
       System.exit(1);
+      return;
     }
 
-    setupGame();
-  }
-
-  /**
-   * The debug display at the top left.
-   */
-  public static var debugDisplay:FunkinDebugDisplay;
-
-  function setupGame():Void
-  {
     #if FEATURE_HAXEUI
     initHaxeUI();
     #end
@@ -157,19 +155,21 @@ class Main extends Sprite
 
     WindowUtil.setVSyncMode(funkin.Preferences.vsyncMode);
 
-    var game:FlxGame = new FlxGame(gameWidth, gameHeight, initialState, Preferences.framerate, Preferences.framerate, skipSplash,
+    trace("ASS");
+    super(gameWidth, gameHeight, initialState, Preferences.framerate, Preferences.framerate, skipSplash,
       (FlxG.stage.window.fullscreen || Preferences.autoFullscreen));
+    trace("ASS2");
+    _customSoundTray = funkin.ui.options.FunkinSoundTray;
+    scrollRect = new openfl.geom.Rectangle();
+    __scrollRect.setTo(0, 0, FlxG.scaleMode.gameSize.x, FlxG.scaleMode.gameSize.y);
+    applicationScreen.addChild(this);
+    applicationScreen.stage.scaleMode = openfl.display.StageScaleMode.NO_SCALE;
 
-    // FlxG.game._customSoundTray wants just the class, it calls new from
-    // create() in there, which gets called when it's added to the stage
-    // which is why it needs to be added before addChild(game) here
-    @:privateAccess
-    game._customSoundTray = funkin.ui.options.FunkinSoundTray;
-
-    addChild(game);
+    trace("ASS3");
+    FlxG.signals.gameResized.add((w, h) -> __scrollRect.setTo(0, 0, FlxG.scaleMode.gameSize.x, FlxG.scaleMode.gameSize.y));
 
     #if FEATURE_DEBUG_FUNCTIONS
-    game.debugger.interaction.addTool(new funkin.util.TrackerToolButtonUtil());
+    debugger.interaction.addTool(new funkin.util.TrackerToolButtonUtil());
     funkin.util.macro.ConsoleMacro.init();
     #end
 
@@ -260,4 +260,20 @@ class Main extends Sprite
     }
   }
   #end
+
+  var skipNextTickUpdate:Bool = false;
+
+  public override function switchState()
+  {
+    super.switchState();
+    draw();
+    _total = ticks = getTicks();
+    skipNextTickUpdate = true;
+  }
+
+  public override function onEnterFrame(t)
+  {
+    if (skipNextTickUpdate != (skipNextTickUpdate = false)) _total = ticks = getTicks();
+    super.onEnterFrame(t);
+  }
 }

@@ -504,13 +504,13 @@ class Preferences
 
   public static function setDebugDisplayMode(mode:DebugDisplayMode):Void
   {
-    if (FlxG.game.parent.contains(Main.debugDisplay)) FlxG.game.parent.removeChild(Main.debugDisplay);
+    // if (Main.applicationScreen.contains(Main.debugDisplay)) Main.applicationScreen.removeChild(Main.debugDisplay);
 
     if (mode == DebugDisplayMode.Off) return;
 
     Main.debugDisplay.isAdvanced = (mode == DebugDisplayMode.Advanced);
 
-    FlxG.game.parent.addChild(Main.debugDisplay);
+    // Main.applicationScreen.addChild(Main.debugDisplay);
   }
 
   static function setDebugDisplayBGOpacity(value:Float):Void
