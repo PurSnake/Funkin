@@ -480,7 +480,7 @@ class LoadingState extends MusicBeatSubState
     FlxG.signals.postStateSwitch.addOnce(purgeCallback);
   }
 
-  function onFullyComplete():Void
+  public function onFullyComplete():Void
   {
     if (transitionCancelled) return;
     if (completionStarted)

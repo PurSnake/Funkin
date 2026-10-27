@@ -53,7 +53,7 @@ class FunkayLoadingState extends LoadingState
 
     progressBar = new FunkinSprite(0, FlxG.height - 24).makeSolidColor(1, BAR_HEIGHT, 0xFFFF16D2);
     mainCamera = new FunkinCamera('loadingFunkay');
-    mainCamera.bgColor = this.bgColor; //just in case ig
+    mainCamera.bgColor = this.bgColor; // just in case ig
   }
 
   override public function create():Void
@@ -97,14 +97,18 @@ class FunkayLoadingState extends LoadingState
   {
     super.update(elapsed);
 
-    // Update progress bar display.
-    var currentWidth:Float = progressBar.width;
-    var targetWidth:Float = FlxG.width * this.currentProgress;
-    var displayWidth:Float = MathUtil.smoothLerpPrecision(currentWidth, targetWidth, elapsed, BAR_EASE_TIME);
+    var targetWidth:Float = FlxG.width * currentProgress;
+    var displayWidth:Float = MathUtil.smoothLerpPrecision(progressBar.width, targetWidth, elapsed, BAR_EASE_TIME);
 
     progressBar.x = 0;
     progressBar.y = FlxG.height - 20;
     progressBar.setGraphicSize(displayWidth, BAR_HEIGHT);
     progressBar.updateHitbox();
+  }
+
+  override public function onFullyComplete():Void
+  {
+    currentProgress = 1.0;
+    super.onFullyComplete();
   }
 }
